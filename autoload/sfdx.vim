@@ -101,7 +101,7 @@ endfunction
 " ==== force:data ====
 " data#soql_query
 function! sfdx#execute_soql(query) abort
-  let l:cmd = printf("sfdx force:data:soql:query -q '%s' -r human --targetusername %s", a:query, g:alias)
+  let l:cmd = printf("sfdx force:data:soql:query -q %s -r human --targetusername %s", a:query, g:alias)
   call s:open_term(l:cmd)
 endfunction
 
