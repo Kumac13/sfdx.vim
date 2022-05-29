@@ -1,13 +1,5 @@
-function! Hoge() abort
-  let query = "select id, Name from account limit 5"
-  call sfdx#execute_soql(query)
-endfunction
 
-let s:is_prod = 1
 let s:bufname = expand("%:p")
-let g:config_file_path = '~/'
-let g:sfdx_sandbox_login_url = 'https://test.salesforce.com'
-let g:alias = 'kumac'
 
 " ==== Main =====
 function! s:open_term(cmd) abort
@@ -95,6 +87,8 @@ endfunction
 " ===== force:apex ====
 " apex#create
 " apex#test_run
+" - test_selected
+" - test_all
 " apex#log_list
 " apex#log_get
 
