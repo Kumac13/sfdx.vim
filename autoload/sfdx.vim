@@ -1,5 +1,6 @@
-
 let s:bufname = expand("%:p")
+let g:sfdx_login_url = 'https://login.salesforce.com'
+let g:alias = ''
 
 " ==== Main =====
 function! s:open_term(cmd) abort
@@ -46,10 +47,23 @@ function! s:is_sfdx_project_file() abort
     return 0
 endfunction
 
+" check login org
+function! s:confirm_org()
+  let input = input(printf('Select instance to login [p]roduction/[s]andbox/[q]uit: '), '',)
+  if input == 'p'
+  elseif input == 's'
+    let g:sfdx_login_url = 'https://test.salesforce.com'
+  else
+    return
+  endif
+  let g:alias = input(printf('Enter an org alias or user default alias: '), '')
+endfunction
+
 " ==== force:auth =====
 " auth#web_login
 function! sfdx#web_login() abort
-  let l:cmd = printf('sfdx force:auth:web:login -r %s -a %s', g:sfdx_sandbox_login_url, g:alias)
+  call s:confirm_org()
+  let l:cmd = printf('sfdx force:auth:web:login -r %s -a %s', g:sfdx_login_url, g:alias)
   call s:open_term(cmd)
 endfunction
 
