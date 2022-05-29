@@ -1,0 +1,103 @@
+*sfdx.txt*	日本語ヘルプ
+
+Version :
+Author  :
+License : MIT license  {{{
+    Permission is hereby granted, free of charge, to any person obtaining
+    a copy of this software and associated documentation files (the
+    "Software"), to deal in the Software without restriction, including
+    without limitation the rights to use, copy, modify, merge, publish,
+    distribute, sublicense, and/or sell copies of the Software, and to
+    permit persons to whom the Software is furnished to do so, subject to
+    the following conditions:
+    The above copyright notice and this permission notice shall be included
+    in all copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+    OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+    MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+    IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+    CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+}}}
+
+==============================================================================
+目次						*sfdx-contents*
+
+概要				|sfdx-introduction|
+使い方				|sfdx-usage|
+インターフェイス		|sfdx-interface|
+  変数				  |sfdx-variables|
+  関数				  |sfdx-functions|
+TODO				|sfdx-todo|
+更新履歴			|sfdx-changelog|
+
+
+==============================================================================
+概要						*sfdx-introduction*
+
+*sfdx* は
+
+最新版:
+https://github.com/user/sfdx.vim
+
+
+==============================================================================
+使い方						*sfdx-usage*
+
+
+
+==============================================================================
+インターフェイス				*sfdx-interface*
+
+------------------------------------------------------------------------------
+変数						*sfdx-variables*
+
+g:config_file_path				*g:config_file_path*
+	既定値: = "~/"
+
+
+g:sfdx_sandbox_login_url			*g:sfdx_sandbox_login_url*
+	既定値: = "https://test.salesforce.com"
+
+
+g:alias						*g:alias*
+	既定値: = "kumac"
+
+
+g:list						*g:list*
+
+
+------------------------------------------------------------------------------
+関数						*sfdx-functions*
+
+Hoge()						*Hoge()*
+
+
+sfdx#deploy()					*sfdx#deploy()*
+
+
+sfdx#execute_soql({query})			*sfdx#execute_soql()*
+
+
+sfdx#org_list()					*sfdx#org_list()*
+
+
+sfdx#retrieve()					*sfdx#retrieve()*
+
+
+sfdx#web_login()				*sfdx#web_login()*
+
+
+==============================================================================
+TODO						*sfdx-todo*
+
+
+
+==============================================================================
+更新履歴					*sfdx-changelog*
+
+
+==============================================================================
+vim:tw=78:ts=8:ft=help:norl:noet:fen:
