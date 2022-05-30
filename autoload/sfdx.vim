@@ -18,7 +18,7 @@ endfunction
 " Config
 "
 " TODO:
-" - current_pathのrootがsalesforceプロジェクトかどうかの確認をしたい
+" - [ ] check current path root which salesforce projce or not
 " config#is_sfdx_exist
 function! s:is_sfdx_exist() abort
   if executable('sfdx')
@@ -101,8 +101,8 @@ endfunction
 " ===== force:apex ====
 " apex#create
 " apex#test_run
-" - test_selected
-" - test_all
+" - run_apex_test_selected()
+" - run_apex_test_all()
 " apex#log_list
 " apex#log_get
 
