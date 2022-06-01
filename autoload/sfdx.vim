@@ -1,6 +1,5 @@
 let s:bufname = expand("%:p")
 let g:sfdx_login_url = 'https://login.salesforce.com'
-let g:alias = ''
 
 " ==== Main =====
 function! s:open_term(cmd) abort
