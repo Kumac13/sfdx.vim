@@ -10,6 +10,7 @@ function! sfdx#main(name_space, ex_cmd) abort
 
   if a:name_space == 'org'
     call s:org(a:ex_cmd)
+    return
   endif
 
   if !exists('g:alias')
@@ -64,10 +65,30 @@ function! s:web_login() abort
   call s:open_term(cmd)
 endfunction
 
+function! s:auth_list() abort
+  if !exists('g:auth_list')
+    let l:cmd = 'sfdx auth:list --json'
+    let g:auth_list = json_decode(system(l:cmd)).result
+  endif
+  for obj in g:auth_list
+    if has_key(obj, 'alias')
+      " let g:alias = obj.alias
+      echo obj.isSandbox
+    else
+      call s:confirm_org()
+      call s:web_login()
+    endif
+  endfor
+endfunction
+
+function! Hoge() abort
+  call s:auth_list()
+endfunction
+
 " ==== force:org ====
 " org#list
 function! s:org(ex_cmd) abort
-  if a:ex_cmd == 'List'
+  if a:ex_cmd == 'list'
     call s:org_list()
     return
   endif
