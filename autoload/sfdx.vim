@@ -64,23 +64,27 @@ function! s:web_login() abort
 endfunction
 
 function! s:auth_list() abort
+  let s:i = 0
   if !exists('g:auth_list')
     let l:cmd = 'sfdx auth:list --json'
     let g:auth_list = json_decode(system(l:cmd)).result
   endif
   for obj in g:auth_list
     if has_key(obj, 'alias')
-      " let g:alias = obj.alias
-      echo obj.isSandbox
-    else
-      call s:confirm_org()
-      call s:web_login()
+      if exists('g:alias') && g:alias == obj.alias
+        let g:sfdx_login_url = obj.instanceUrl
+        return 1
+      endif
     endif
   endfor
-endfunction
-
-function! Hoge() abort
+  let s:i += 1
+  if s:i > 1
+    echo 'There are no such alias in org'
+    return 0
+  endif
+  call s:confirm_org()
   call s:auth_list()
+  return 1
 endfunction
 
 " ==== force:org ====
