@@ -17,6 +17,7 @@ function! sfdx#main(name_space, ex_cmd) abort
     call s:confirm_org()
   endif
   echo printf('Execute the process in the alias: %s',g:alias)
+
   if a:name_space == 'auth'
     call s:auth(a:ex_cmd)
   elseif a:name_space == 'source'
@@ -119,9 +120,9 @@ endfunction
 " deploy current_path file
 function! s:source(ex_cmd) abort
   if s:is_sfdx_project_file()
-    if a:ex_cmd == 'Deploy'
+    if a:ex_cmd == 'deploy'
       call s:deploy()
-    elseif a:ex_cmd == 'Retreve'
+    elseif a:ex_cmd == 'retrieve'
       call s:retrieve()
     endif
   endif
