@@ -14,16 +14,13 @@ function! sfdx#main(name_space, ex_cmd) abort
   endif
 
   if !exists('g:alias')
-    if !s:confirm_org()
-      return
-    endif
-  else
-    echo printf('Execute the process in the alias: %s',g:alias)
-    if a:name_space == 'auth'
-      call s:auth(a:ex_cmd)
-    elseif a:name_space == 'source'
-      call s:source(a:ex_cmd)
-    endif
+    call s:confirm_org()
+  endif
+  echo printf('Execute the process in the alias: %s',g:alias)
+  if a:name_space == 'auth'
+    call s:auth(a:ex_cmd)
+  elseif a:name_space == 'source'
+    call s:source(a:ex_cmd)
   endif
 endfunction
 
