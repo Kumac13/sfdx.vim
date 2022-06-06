@@ -29,8 +29,14 @@ function! sfdx#main(name_space, ex_cmd) abort
 endfunction
 
 function! s:open_term(cmd) abort
-    let l:height = winheight(win_getid()) / 4
-    let l:term = printf('bo term ++rows=%s ++shell', height)
+    let l:width = winwidth(win_getid())
+    let l:height = winheight(win_getid()) * 2.1
+    let l:split_height = l:height / 4
+    if height > width
+      let l:term = printf('bo term ++rows=%s ++shell', l:split_height)
+    else
+      let l:term = 'vert term ++shell'
+    endif
 
     call execute(printf("%s %s", term, a:cmd))
 
