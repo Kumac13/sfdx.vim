@@ -70,11 +70,7 @@ function! s:set_auth() abort
     endif
   endfor
   echo printf("\nThere are no such alias in org: %s", g:alias)
-  let l:input = input(printf("\nInput again? [y]es/[n]o: "), "",)
-  if l:input == 'y'
-    let g:alias = ''
-    call s:set_auth()
-  endif
+  let g:alias = ''
   return 0
 endfunction
 
