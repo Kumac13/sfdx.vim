@@ -25,6 +25,8 @@ function! sfdx#main(name_space, ex_cmd) abort
     call s:auth(a:ex_cmd)
   elseif a:name_space == 'source'
     call s:source(a:ex_cmd)
+  elseif a:name_space == 'apex'
+    call s:apex(a:ex_cmd)
   endif
 endfunction
 
@@ -158,9 +160,19 @@ function! s:retrieve() abort
 endfunction
 
 " ===== force:apex ====
+function! s:apex(ex_cmd) abort
+  if !s:is_sfdx_project_file()
+    echo printf('You can not create apex file on this directory: %s',s:bufname)
+    return
+  endif
+
+  if ex_cmd == 'create_apex_file'
+    call s:create_apex_file()
+  endif
+endfunction
+
 " apex#create
-function! sfdx#create_apex_file() abort
-  if s:is_sfdx_project_file() == 1
+function! s:create_apex_file() abort
     let l:class_or_trigger = input(printf('Select file type [c]lass/[t]rigger/[q]uit: '), '',)
     if class_or_trigger == 'c'
       let l:file_type = 'class'
@@ -170,12 +182,8 @@ function! sfdx#create_apex_file() abort
       return
     endif
     let l:file_name = input(printf('Enter file name '), '',)
-    echo l:file_name
     let l:cmd = printf('sfdx force:apex:%s:create -n %s', l:file_type, l:file_name)
-  else
-    echo printf('You can not create apex file on this directory: %s',s:bufname)
-    return
-  endif
+    call s:open_term(cmd)
 endfunction
 " apex#test_run
 " - run_apex_test_selected()
