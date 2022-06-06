@@ -52,8 +52,7 @@ function! s:confirm_org()
 endfunction
 
 function! s:set_auth() abort
-  let g:alias = ''
-  if g:alias == '' || !exists('g:alias')
+  if !exists('g:alias')
     if !s:confirm_org()
       return 0
     endif
