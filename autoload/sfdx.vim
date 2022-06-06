@@ -23,14 +23,18 @@ function! sfdx#main(name_space, ex_cmd, ...) abort
 
   echo printf("\nExecute the process in the alias: %s",g:alias)
 
+  " hundle commands which isnot excutable without auth
   if a:name_space == 'auth'
     call s:auth(a:ex_cmd)
   elseif a:name_space == 'source'
     call s:source(a:ex_cmd)
   elseif a:name_space == 'apex'
     call s:apex(a:ex_cmd)
-  elseif a:name_space == 'data' && l:extra_arg != ''
-    call s:data(a:ex_cmd, l:extra_arg)
+  " with some arg
+  elseif l:extra_arg != ''
+    if a:name_space == 'data'
+      call s:data(a:ex_cmd, l:extra_arg)
+    endif
   endif
 endfunction
 
