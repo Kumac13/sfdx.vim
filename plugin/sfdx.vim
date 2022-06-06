@@ -9,5 +9,5 @@ command! SfdxList call sfdx#main('auth','list')
 command! SfdxDeploy call sfdx#main('source', 'deploy')
 command! SfdxCreateApexFile call sfdx#main('apex', 'create_apex_file')
 command! SfdxRetrieve call sfdx#main('source', 'retrieve')
-command! -nargs=1 SfdxSoql call sfdx#execute_soql(<q-args>)
+command! -nargs=1 SfdxSoql call sfdx#main('data', 'execute_soql',<q-args>)
 

@@ -1,7 +1,9 @@
 let s:bufname = expand("%:p")
 
 " ==== Main =====
-function! sfdx#main(name_space, ex_cmd) abort
+function! sfdx#main(name_space, ex_cmd, ...) abort
+  let l:extra_arg = get(a:, 1, '')
+
   " check sfdx command exists
   if !executable('sfdx')
     echo 'sfdx not available.'
@@ -27,6 +29,8 @@ function! sfdx#main(name_space, ex_cmd) abort
     call s:source(a:ex_cmd)
   elseif a:name_space == 'apex'
     call s:apex(a:ex_cmd)
+  elseif a:name_space == 'data' && l:extra_arg != ''
+    call s:data(a:ex_cmd, l:extra_arg)
   endif
 endfunction
 
@@ -193,14 +197,15 @@ endfunction
 
 " ==== force:data ====
 " data#soql_query
-function! s:data(ex_cmd)
+function! s:data(ex_cmd, query)
+  if a:ex_cmd == 'execute_soql'
+    call s:execute_soql(a:query)
+  endif
 endfunction
 
-function! sfdx#execute_soql(query) abort
-  let l:cmd = printf("sfdx force:data:soql:query -q %s -r human --targetusername %s", a:query, g:alias)
+function! s:execute_soql(query) abort
+  let l:cmd = printf("sfdx force:data:soql:query -q '%s' -r human --targetusername %s", a:query, g:alias)
   call s:open_term(l:cmd)
 endfunction
 
 " data#apex_execute
-"
-"
