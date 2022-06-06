@@ -172,11 +172,14 @@ function! s:apex(ex_cmd) abort
   if !s:is_sfdx_project_file()
     echo printf('You can not create apex file on this directory: %s',s:bufname)
     return
+  else
+    if a:ex_cmd == 'create_apex_file'
+      call s:create_apex_file()
+    elseif a:ex_cmd == 'run_apex_test_cls'
+      call s:run_apex_test_cls()
+    endif
   endif
 
-  if ex_cmd == 'create_apex_file'
-    call s:create_apex_file()
-  endif
 endfunction
 
 " apex#create
@@ -196,6 +199,12 @@ endfunction
 " apex#test_run
 " - run_apex_test_selected()
 " - run_apex_test_all()
+function! s:run_apex_test_cls() abort
+  let l:current_file_name = expand("%:t:r")
+  let l:cmd = printf("sfdx force:apex:test:run -n '%s' -u %s -r human", l:current_file_name, g:alias)
+  call s:open_term(l:cmd)
+endfunction
+
 " apex#log_list
 " apex#log_get
 
