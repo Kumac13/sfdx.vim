@@ -10,7 +10,6 @@ function! sfdx#main(name_space, ex_cmd) abort
 
   " set up authentication
   if !s:set_auth()
-    echo 'set_auth'
     return
   endif
 
@@ -70,7 +69,6 @@ function! s:set_auth() abort
     endif
   endfor
   echo printf("\nThere are no such alias in org: %s", g:alias)
-  let g:alias = ''
   return 0
 endfunction
 
