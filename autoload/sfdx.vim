@@ -1,22 +1,26 @@
 let s:bufname = expand("%:p")
-let g:sfdx_login_url = 'https://login.salesforce.com'
 
 " ==== Main =====
 function! sfdx#main(name_space, ex_cmd) abort
+  " check sfdx command exists
   if !executable('sfdx')
     echo 'sfdx not available.'
     return
   endif
 
+  " set up authentication
+  if !s:set_auth()
+    echo 'set_auth'
+    return
+  endif
+
+  " handle commands which is excutable without auth
   if a:name_space == 'org'
     call s:org(a:ex_cmd)
     return
   endif
 
-  if !exists('g:alias')
-    call s:confirm_org()
-  endif
-  echo printf('Execute the process in the alias: %s',g:alias)
+  echo printf("\nExecute the process in the alias: %s",g:alias)
 
   if a:name_space == 'auth'
     call s:auth(a:ex_cmd)
@@ -38,15 +42,40 @@ endfunction
 
 " check login org
 function! s:confirm_org()
-  let input = input(printf('Select instance to login [p]roduction/[s]andbox/[q]uit: '), '',)
-  if input == 'q'
-    echo 'q'
+  let input = input(printf("Select instance to login [p]roduction/[s]andbox/[q]uit: "), "",)
+  if input == 'p' || input == 's'
+    let g:alias = input(printf("\nEnter an org alias or user default alias: "), "")
+    return 1
+  else
     return 0
-  elseif input == 's'
-    let g:sfdx_login_url = 'https://test.salesforce.com'
   endif
-  let g:alias = input(printf('Enter an org alias or user default alias: '), '')
-  return 1
+endfunction
+
+function! s:set_auth() abort
+  if g:alias == '' || !exists('g:alias')
+    if !s:confirm_org()
+      return 0
+    endif
+  endif
+  if !exists('g:sfdx_auth_list')
+    let l:list = json_decode(system('sfdx auth:list --json'))
+    let g:sfdx_auth_list = l:list.result
+  endif
+  for obj in g:sfdx_auth_list
+    if has_key(obj, 'alias')
+      if g:alias == obj.alias
+        let g:sfdx_login_url = obj.instanceUrl
+        return 1
+      endif
+    endif
+  endfor
+  echo printf("\nThere are no such alias in org: %s", g:alias)
+  let l:input = input(printf("\nInput again? [y]es/[n]o: "), "",)
+  if l:input == 'y'
+    let g:alias = ''
+    call s:set_auth()
+  endif
+  return 0
 endfunction
 
 
@@ -55,6 +84,8 @@ endfunction
 function! s:auth(ex_cmd) abort
   if a:ex_cmd == 'login'
     call s:web_login()
+  elseif a:ex_cmd == 'list'
+    call s:auth_list()
   endif
 endfunction
 
@@ -64,27 +95,8 @@ function! s:web_login() abort
 endfunction
 
 function! s:auth_list() abort
-  let s:i = 0
-  if !exists('g:auth_list')
-    let l:cmd = 'sfdx auth:list --json'
-    let g:auth_list = json_decode(system(l:cmd)).result
-  endif
-  for obj in g:auth_list
-    if has_key(obj, 'alias')
-      if exists('g:alias') && g:alias == obj.alias
-        let g:sfdx_login_url = obj.instanceUrl
-        return 1
-      endif
-    endif
-  endfor
-  let s:i += 1
-  if s:i > 1
-    echo 'There are no such alias in org'
-    return 0
-  endif
-  call s:confirm_org()
-  call s:auth_list()
-  return 1
+    let l:cmd = 'sfdx auth:list'
+    call s:open_term(cmd)
 endfunction
 
 " ==== force:org ====
