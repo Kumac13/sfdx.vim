@@ -205,6 +205,17 @@ function! s:run_apex_test_cls() abort
   call s:open_term(l:cmd)
 endfunction
 
+function! sfdx#apex_execute() range abort
+  let l:outputfile = "./tmp.apex"
+  if !filereadable(outputfile)
+    execute "redir > ".outputfile
+  endif
+  let lines = getline(a:firstline, a:lastline)
+  call writefile(lines, outputfile)
+  call s:open_term('sfdx force:apex:execute -f tmp.apex -u kumac')
+endfunction
+
+
 " apex#log_list
 " apex#log_get
 

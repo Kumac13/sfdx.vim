@@ -11,4 +11,5 @@ command! SfdxCreateApexFile call sfdx#main('apex', 'create_apex_file')
 command! SfdxRunApexTestClass call sfdx#main('apex', 'run_apex_test_cls')
 command! SfdxRetrieve call sfdx#main('source', 'retrieve')
 command! -nargs=1 SfdxSoql call sfdx#main('data', 'execute_soql',<q-args>)
+command! -range SfdxApexExecute <line1>,<line2>call sfdx#apex_execute()
 
