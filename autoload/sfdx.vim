@@ -1,7 +1,7 @@
 let s:bufname = expand("%:p")
 
 " ==== Main =====
-function! sfdx#main(name_space, ex_cmd, ...) abort
+function! sfdx#main(name_space, ex_cmd, ...) range abort
   let l:extra_arg = get(a:, 1, '')
 
   " check sfdx command exists
@@ -29,7 +29,7 @@ function! sfdx#main(name_space, ex_cmd, ...) abort
   elseif a:name_space == 'source'
     call s:source(a:ex_cmd)
   elseif a:name_space == 'apex'
-    call s:apex(a:ex_cmd)
+    call s:apex(a:ex_cmd, a:firstline, a:lastline)
   " with some arg
   elseif l:extra_arg != ''
     if a:name_space == 'data'
@@ -168,7 +168,11 @@ function! s:retrieve() abort
 endfunction
 
 " ===== force:apex ====
-function! s:apex(ex_cmd) abort
+function! s:apex(ex_cmd, nfirstline, nlastline) abort
+  if a:ex_cmd == 'apex_execute'
+    call s:apex_execute(a:nfirstline, a:nlastline)
+    return
+  endif
   if !s:is_sfdx_project_file()
     echo printf('You can not create apex file on this directory: %s',s:bufname)
     return
@@ -179,7 +183,6 @@ function! s:apex(ex_cmd) abort
       call s:run_apex_test_cls()
     endif
   endif
-
 endfunction
 
 " apex#create
@@ -205,14 +208,14 @@ function! s:run_apex_test_cls() abort
   call s:open_term(l:cmd)
 endfunction
 
-function! sfdx#apex_execute() range abort
+function! s:apex_execute(nfirstline, nlastline) abort
   let l:outputfile = "./tmp.apex"
   if !filereadable(outputfile)
     execute "redir > ".outputfile
   endif
-  let lines = getline(a:firstline, a:lastline)
+  let lines = getline(a:nfirstline, a:nlastline)
   call writefile(lines, outputfile)
-  call s:open_term('sfdx force:apex:execute -f tmp.apex -u kumac')
+  call s:open_term(printf("sfdx force:apex:execute -f tmp.apex -u %s", g:alias))
 endfunction
 
 
