@@ -156,13 +156,15 @@ function! s:source(ex_cmd) abort
 endfunction
 
 function! s:deploy() abort
-  let l:cmd = printf('sfdx force:source:deploy --sourcepath %s --targetusername %s', s:bufname, g:alias)
+  let l:current_file_path = expand("%:p")
+  let l:cmd = printf('sfdx force:source:deploy --sourcepath %s --targetusername %s', l:current_file_path, g:alias)
   call s:open_term(cmd)
 endfunction
 
 " retrieve current_path file from salesforce
 function! s:retrieve() abort
-  let l:cmd = printf('sfdx force:source:retrieve --sourcepath %s --targetusername %s', s:bufname, g:alias)
+  let l:current_file_path = expand("%:p")
+  let l:cmd = printf('sfdx force:source:retrieve --sourcepath %s --targetusername %s', l:current_file_path, g:alias)
   call s:open_term(cmd)
   redraw
 endfunction
