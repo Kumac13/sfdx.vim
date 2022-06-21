@@ -225,7 +225,7 @@ function! s:run_apex_test_selected(nfirstline, nlastline) abort
     echo "This is not Test Class"
     return
   endif
-  let l:target_test = expand("%:t:r")."."."method_name"
+  let l:target_test = expand("%:t:r").".".l:method_name
   let l:cmd = printf("sfdx force:apex:test:run -t '%s' -u %s", l:target_test, g:alias)
   echo printf("Excuting selected test: %s", l:target_test)
   let l:test_run_result = system(cmd)
