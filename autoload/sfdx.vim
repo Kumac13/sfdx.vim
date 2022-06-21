@@ -125,6 +125,17 @@ function! s:org_list() abort
 endfunction
 
 " ==== force:source ====
+function! s:source(ex_cmd) abort
+  if s:is_sfdx_project_file()
+    if a:ex_cmd == 'deploy'
+      call s:deploy()
+    elseif a:ex_cmd == 'retrieve'
+      call s:retrieve()
+    endif
+  endif
+  return
+endfunction
+
 " check buffer file is sfdx project file?
 function! s:is_sfdx_project_file() abort
   let l:extention = expand("%:e")
@@ -143,25 +154,14 @@ function! s:is_sfdx_project_file() abort
     return 0
 endfunction
 
-" deploy current_path file
-function! s:source(ex_cmd) abort
-  if s:is_sfdx_project_file()
-    if a:ex_cmd == 'deploy'
-      call s:deploy()
-    elseif a:ex_cmd == 'retrieve'
-      call s:retrieve()
-    endif
-  endif
-  return
-endfunction
-
+" Deploy current file to salesforce
 function! s:deploy() abort
   let l:current_file_path = expand("%:p")
   let l:cmd = printf('sfdx force:source:deploy --sourcepath %s --targetusername %s', l:current_file_path, g:alias)
   call s:open_term(cmd)
 endfunction
 
-" retrieve current_path file from salesforce
+" Retrieve current_path file from salesforce
 function! s:retrieve() abort
   let l:current_file_path = expand("%:p")
   let l:cmd = printf('sfdx force:source:retrieve --sourcepath %s --targetusername %s', l:current_file_path, g:alias)
@@ -173,6 +173,12 @@ endfunction
 function! s:apex(ex_cmd, nfirstline, nlastline) abort
   if a:ex_cmd == 'apex_execute'
     call s:apex_execute(a:nfirstline, a:nlastline)
+    return
+  elseif a:ex_cmd == 'apex_log_list'
+    call s:apex_log_list()
+    return
+  elseif a:ex_cmd == 'apex_log_tail'
+    call s:apex_log_tail()
     return
   endif
   if !s:is_sfdx_project_file()
@@ -189,7 +195,7 @@ function! s:apex(ex_cmd, nfirstline, nlastline) abort
   endif
 endfunction
 
-" apex#create
+" Create apex file
 function! s:create_apex_file() abort
     let l:class_or_trigger = input(printf('Select file type [c]lass/[t]rigger/[q]uit: '), '',)
     if class_or_trigger == 'c'
@@ -204,7 +210,7 @@ function! s:create_apex_file() abort
     call s:open_term(cmd)
 endfunction
 
-" apex#test_run
+" Run selected test method
 function! s:run_apex_test_selected(nfirstline, nlastline) abort
   let lines = getline(a:nfirstline, a:nlastline)
   let list = split(lines[0], ' ')
@@ -233,12 +239,14 @@ function! s:run_apex_test_selected(nfirstline, nlastline) abort
   call s:open_term(l:cmd)
 endfunction
 
+" Run test class
 function! s:run_apex_test_cls() abort
   let l:current_file_name = expand("%:t:r")
   let l:cmd = printf("sfdx force:apex:test:run -n '%s' -u %s -r human", l:current_file_name, g:alias)
   call s:open_term(l:cmd)
 endfunction
 
+" Execute apex code block
 function! s:apex_execute(nfirstline, nlastline) abort
   let l:outputfile = "./tmp.apex"
   if !filereadable(outputfile)
@@ -250,20 +258,29 @@ function! s:apex_execute(nfirstline, nlastline) abort
 endfunction
 
 
-" apex#log_list
+" Get Debug log list
+function! s:apex_log_list()
+  let l:cmd = printf("sfdx force:apex:log:list -u %s", g:alias)
+  call s:open_term(l:cmd)
+endfunction
 " apex#log_get
 
+" Activates debug logging
+function! s:apex_log_tail()
+  let l:cmd = printf("sfdx force:apex:log:tail -u %s", g:alias)
+  call s:open_term(l:cmd)
+endfunction
+
 " ==== force:data ====
-" data#soql_query
 function! s:data(ex_cmd, query)
   if a:ex_cmd == 'execute_soql'
     call s:execute_soql(a:query)
   endif
 endfunction
 
+" Get soql query result
 function! s:execute_soql(query) abort
   let l:cmd = printf("sfdx force:data:soql:query -q '%s' -r human --targetusername %s", a:query, g:alias)
   call s:open_term(l:cmd)
 endfunction
 
-" data#apex_execute
