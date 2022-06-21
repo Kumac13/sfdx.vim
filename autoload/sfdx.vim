@@ -183,6 +183,8 @@ function! s:apex(ex_cmd, nfirstline, nlastline) abort
       call s:create_apex_file()
     elseif a:ex_cmd == 'run_apex_test_cls'
       call s:run_apex_test_cls()
+    elseif a:ex_cmd == 'run_apex_test_selected'
+      call s:run_apex_test_selected(a:nfirstline, a:nlastline)
     endif
   endif
 endfunction
@@ -201,9 +203,36 @@ function! s:create_apex_file() abort
     let l:cmd = printf('sfdx force:apex:%s:create -n %s', l:file_type, l:file_name)
     call s:open_term(cmd)
 endfunction
+
 " apex#test_run
-" - run_apex_test_selected()
-" - run_apex_test_all()
+function! s:run_apex_test_selected(nfirstline, nlastline) abort
+  let lines = getline(a:nfirstline, a:nlastline)
+  let list = split(lines[0], ' ')
+  let l:method_name = ''
+
+  for item in list
+    let int =  match(item, '()')
+    if int > 0
+      let l:method_name = matchstr(item, '.*\ze(')
+    endif
+  endfor
+  if l:method_name == ''
+    echo "No method name"
+    return
+  endif
+
+  if expand("%:t:r") !~ "Test"
+    echo "This is not Test Class"
+    return
+  endif
+  let l:target_test = expand("%:t:r")."."."method_name"
+  let l:cmd = printf("sfdx force:apex:test:run -t '%s' -u %s", l:target_test, g:alias)
+  echo printf("Excuting selected test: %s", l:target_test)
+  let l:test_run_result = system(cmd)
+  let l:cmd = matchstr(test_run_result, '"\zs.*\ze"')
+  call s:open_term(l:cmd)
+endfunction
+
 function! s:run_apex_test_cls() abort
   let l:current_file_name = expand("%:t:r")
   let l:cmd = printf("sfdx force:apex:test:run -n '%s' -u %s -r human", l:current_file_name, g:alias)
