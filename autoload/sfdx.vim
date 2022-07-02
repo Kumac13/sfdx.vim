@@ -16,7 +16,7 @@ function! sfdx#main(name_space, ex_cmd, ...) range abort
   endif
 
   " handle commands which is excutable without auth
-  if a:name_space == 'org'
+  if a:name_space ==# 'org'
     call s:org(a:ex_cmd)
     return
   endif
@@ -24,15 +24,15 @@ function! sfdx#main(name_space, ex_cmd, ...) range abort
   echo printf("\nExecute the process in the alias: %s",g:alias)
 
   " hundle commands which isnot excutable without auth
-  if a:name_space == 'auth'
+  if a:name_space ==# 'auth'
     call s:auth(a:ex_cmd)
-  elseif a:name_space == 'source'
+  elseif a:name_space ==# 'source'
     call s:source(a:ex_cmd)
-  elseif a:name_space == 'apex'
+  elseif a:name_space ==# 'apex'
     call s:apex(a:ex_cmd, a:firstline, a:lastline)
   " with some arg
   elseif l:extra_arg != ''
-    if a:name_space == 'data'
+    if a:name_space ==# 'data'
       call s:data(a:ex_cmd, l:extra_arg)
     endif
   endif
@@ -58,7 +58,7 @@ endfunction
 " check login org
 function! s:confirm_org()
   let input = input(printf("Select instance to login [p]roduction/[s]andbox/[q]uit: "), "",)
-  if input == 'p' || input == 's'
+  if input ==# 'p' || input ==# 's'
     let g:alias = input(printf("\nEnter an org alias or user default alias: "), "")
     return 1
   else
@@ -78,7 +78,7 @@ function! s:set_auth() abort
   endif
   for obj in g:sfdx_auth_list
     if has_key(obj, 'alias')
-      if g:alias == obj.alias
+      if g:alias ==# obj.alias
         let g:sfdx_login_url = obj.instanceUrl
         return 1
       endif
@@ -94,7 +94,7 @@ endfunction
 function! s:auth(ex_cmd) abort
   if a:ex_cmd == 'login'
     call s:web_login()
-  elseif a:ex_cmd == 'list'
+  elseif a:ex_cmd ==# 'list'
     call s:auth_list()
   endif
 endfunction
@@ -112,7 +112,7 @@ endfunction
 " ==== force:org ====
 " org#list
 function! s:org(ex_cmd) abort
-  if a:ex_cmd == 'list'
+  if a:ex_cmd ==# 'list'
     call s:org_list()
     return
   endif
@@ -127,9 +127,9 @@ endfunction
 " ==== force:source ====
 function! s:source(ex_cmd) abort
   if s:is_sfdx_project_file()
-    if a:ex_cmd == 'deploy'
+    if a:ex_cmd ==# 'deploy'
       call s:deploy()
-    elseif a:ex_cmd == 'retrieve'
+    elseif a:ex_cmd ==# 'retrieve'
       call s:retrieve()
     endif
   endif
@@ -146,7 +146,7 @@ function! s:is_sfdx_project_file() abort
         \ 'xml',
   \])
   for l:patten in l:patterns
-    if l:extention == l:patten
+    if l:extention ==# l:patten
       return 1
     endif
   endfor
@@ -171,13 +171,13 @@ endfunction
 
 " ===== force:apex ====
 function! s:apex(ex_cmd, nfirstline, nlastline) abort
-  if a:ex_cmd == 'apex_execute'
+  if a:ex_cmd ==# 'apex_execute'
     call s:apex_execute(a:nfirstline, a:nlastline)
     return
-  elseif a:ex_cmd == 'apex_log_list'
+  elseif a:ex_cmd ==# 'apex_log_list'
     call s:apex_log_list()
     return
-  elseif a:ex_cmd == 'apex_log_tail'
+  elseif a:ex_cmd ==# 'apex_log_tail'
     call s:apex_log_tail()
     return
   endif
@@ -185,11 +185,11 @@ function! s:apex(ex_cmd, nfirstline, nlastline) abort
     echo printf('You can not create apex file on this directory: %s',s:bufname)
     return
   else
-    if a:ex_cmd == 'create_apex_file'
+    if a:ex_cmd ==# 'create_apex_file'
       call s:create_apex_file()
-    elseif a:ex_cmd == 'run_apex_test_cls'
+    elseif a:ex_cmd ==# 'run_apex_test_cls'
       call s:run_apex_test_cls()
-    elseif a:ex_cmd == 'run_apex_test_selected'
+    elseif a:ex_cmd ==# 'run_apex_test_selected'
       call s:run_apex_test_selected(a:nfirstline, a:nlastline)
     endif
   endif
@@ -198,9 +198,9 @@ endfunction
 " Create apex file
 function! s:create_apex_file() abort
     let l:class_or_trigger = input(printf('Select file type [c]lass/[t]rigger/[q]uit: '), '',)
-    if class_or_trigger == 'c'
+    if class_or_trigger ==# 'c'
       let l:file_type = 'class'
-    elseif class_or_trigger == 't'
+    elseif class_or_trigger ==# 't'
       let l:file_type = 'trigger'
     else
       return
@@ -222,7 +222,7 @@ function! s:run_apex_test_selected(nfirstline, nlastline) abort
       let l:method_name = matchstr(item, '.*\ze(')
     endif
   endfor
-  if l:method_name == ''
+  if l:method_name ==# ''
     echo "No method name"
     return
   endif
@@ -273,7 +273,7 @@ endfunction
 
 " ==== force:data ====
 function! s:data(ex_cmd, query)
-  if a:ex_cmd == 'execute_soql'
+  if a:ex_cmd ==# 'execute_soql'
     call s:execute_soql(a:query)
   endif
 endfunction
