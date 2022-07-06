@@ -19,6 +19,8 @@ function! sfdx#main(name_space, ex_cmd, ...) range abort
   if a:name_space ==# 'org'
     call s:org(a:ex_cmd)
     return
+  elseif a:name_space ==# 'pmd'
+    call s:pmd(a:ex_cmd)
   endif
 
   echo printf("\nExecute the process in the alias: %s",g:alias)
@@ -283,4 +285,60 @@ function! s:execute_soql(query) abort
   let l:cmd = printf("sfdx force:data:soql:query -q '%s' -r human --targetusername %s", a:query, g:alias)
   call s:open_term(l:cmd)
 endfunction
+
+" Use Apex PMD
+" - Need to download pmd
+function! s:pmd(ex_cmd)
+  if a:ex_cmd ==# 'pmd_current_file'
+    call s:pmd_current_file()
+  endif
+endfunction
+
+function! s:pmd_current_file()
+  echo 'Executing Apex Pmd...'
+  let pmd = NewPmd()
+  call pmd.perform()
+endfunction
+
+let g:pmd = {'run_path': $PMD_PATH, 'target_path':'', 'result':''}
+
+function! pmd.command() dict abort
+  return join([self.run_path, 'pmd', '-d', self.target_path, '-R ./rulesets/apex_ruleset.xml -f csv'], ' ' )
+endfunction
+
+function! pmd.perform() dict abort
+  let self.result = split(system(self.command()), '\n')
+  let l:regex = 'net\.sourceforge\.pmd\.PMD\|parseRuleReferenceNode\|WARNING'
+
+  let filterd = filter(self.result, {-> !util#is_regex_match(v:val, l:regex)})
+
+  let parsed = map(copy(filterd), {-> NewPmdResult(v:val).display()})
+
+  call buffer#open_list(parsed)
+
+endfunction
+
+function! NewPmd() abort
+  let self = copy(g:pmd)
+  let self.target_path = expand('%:p')
+  return self
+endfunction
+
+let g:pmd_result = {'File': '', 'Column':'', 'Rule': '', 'Description':''}
+
+function! pmd_result.display() dict abort
+  return printf('%s | %s | %s | %s', self.File, self.Column, self.Rule, self.Description)
+endfunction
+
+function! NewPmdResult(result_row) abort
+  let self = copy(g:pmd_result)
+  let split_item = split(a:result_row, ',')
+  let self.File = expand('%:p')
+  let self.Column = trim(split_item[4], '"', 0)
+  let self.Rule = trim(split_item[7], '"', 0)
+  let self.Description = trim(split_item[5], '"', 0)
+  return self
+endfunction
+
+
 
