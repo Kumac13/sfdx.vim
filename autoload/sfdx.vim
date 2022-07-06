@@ -308,6 +308,7 @@ endfunction
 
 function! pmd.perform() dict abort
   let self.result = split(system(self.command()), '\n')
+  echo self.result
   let l:regex = 'net\.sourceforge\.pmd\.PMD\|parseRuleReferenceNode\|WARNING'
 
   let filterd = filter(self.result, {-> !util#is_regex_match(v:val, l:regex)})
@@ -333,13 +334,9 @@ endfunction
 function! NewPmdResult(result_row) abort
   let self = copy(g:pmd_result)
   let split_item = split(a:result_row, ',')
-  echo split_item
   let self.File = expand('%:p')
   let self.Column = trim(split_item[4], '"', 0)
   let self.Rule = trim(split_item[7], '"', 0)
   let self.Description = trim(split_item[5], '"', 0)
   return self
 endfunction
-
-
-
