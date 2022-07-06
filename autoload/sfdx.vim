@@ -303,12 +303,12 @@ endfunction
 let g:pmd = {'run_path': $PMD_PATH, 'target_path':'', 'result':''}
 
 function! pmd.command() dict abort
-  return join([self.run_path, 'pmd', '-d', self.target_path, '-R ./rulesets/apex_ruleset.xml -f csv'], ' ' )
+  let l:ruleset_path = $HOME.'/.vim/plugged/sfdx.vim/rulesets/apex_ruleset.xml'
+  return join([self.run_path, 'pmd', '-d', self.target_path, '-R ',  l:ruleset_path,' -f csv'], ' ' )
 endfunction
 
 function! pmd.perform() dict abort
   let self.result = split(system(self.command()), '\n')
-  echo self.result
   let l:regex = 'net\.sourceforge\.pmd\.PMD\|parseRuleReferenceNode\|WARNING'
 
   let filterd = filter(self.result, {-> !util#is_regex_match(v:val, l:regex)})
