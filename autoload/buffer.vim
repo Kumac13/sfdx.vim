@@ -23,7 +23,7 @@ function! buffer#on_bufread_list(list) abort
 
   nnoremap <silent> <buffer>
         \  <Plug>(session-close)
-        \  :<C-u>bwipeout!<CR>
+        \  :<C-u>bdelete!<CR>
   nmap <buffer> q <Plug>(session-close)
 
   let lists = a:list
