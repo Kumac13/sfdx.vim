@@ -295,7 +295,7 @@ function! s:pmd(ex_cmd)
 endfunction
 
 function! s:pmd_current_file()
-  echo 'Executing Apex Pmd...'
+  echo "\nExecuting Apex Pmd..."
   let pmd = NewPmd()
   call pmd.perform()
 endfunction
@@ -333,6 +333,7 @@ endfunction
 function! NewPmdResult(result_row) abort
   let self = copy(g:pmd_result)
   let split_item = split(a:result_row, ',')
+  echo split_item
   let self.File = expand('%:p')
   let self.Column = trim(split_item[4], '"', 0)
   let self.Rule = trim(split_item[7], '"', 0)
