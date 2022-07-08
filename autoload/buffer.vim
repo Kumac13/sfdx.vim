@@ -25,6 +25,10 @@ function! buffer#on_bufread_list(list) abort
         \  <Plug>(session-close)
         \  :<C-u>bdelete!<CR>
   nmap <buffer> q <Plug>(session-close)
+  nnoremap <silent> <buffer>
+        \  <Plug>(buffer-open)
+        \  :<C-u>call apex#debug#get_log()<CR>
+  nmap <buffer> <CR> <Plug>(buffer-open)
 
   let lists = a:list
   if empty(lists)

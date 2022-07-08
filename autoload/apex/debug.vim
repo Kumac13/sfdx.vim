@@ -16,14 +16,21 @@ function! apex#debug#debug_log_result_new(result_row) abort
   return self
 endfunction
 
-function! apex#debug#list()
+function! apex#debug#list() abort
   let l:result = json_decode(system('sfdx force:apex:log:list -u kumac --json')).result
   call map(l:result, { -> apex#debug#debug_log_result_new(v:val).display()})
   call buffer#open_list(l:result)
 endfunction
 
+function! apex#debug#get_log() abort
+  let l:debug_id = split(trim(getline('.')), '|')[0]
+  let l:cmd = printf("sfdx force:apex:log:get -i %s -u %s", l:debug_id, g:alias)
+  call util#open_term(l:cmd)
+endfunction
+
 " Activates debug logging
-function! apex#debug#active_debug()
+function! apex#debug#active_debug() abort
   let l:cmd = printf("sfdx force:apex:log:tail -u %s", g:alias)
   call util#open_term(l:cmd)
 endfunction
+
