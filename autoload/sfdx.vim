@@ -90,7 +90,6 @@ function! s:set_auth() abort
   return 0
 endfunction
 
-
 " ==== force:auth =====
 " auth#web_login
 function! s:auth(ex_cmd) abort
@@ -177,10 +176,10 @@ function! s:apex(ex_cmd, nfirstline, nlastline) abort
     call s:apex_execute(a:nfirstline, a:nlastline)
     return
   elseif a:ex_cmd ==# 'apex_log_list'
-    call s:apex_log_list()
+    call apex#debug#list()
     return
   elseif a:ex_cmd ==# 'apex_log_tail'
-    call s:apex_log_tail()
+    call apex#debug#active_debug()
     return
   endif
   if !s:is_sfdx_project_file()
@@ -259,20 +258,6 @@ function! s:apex_execute(nfirstline, nlastline) abort
   call s:open_term(printf("sfdx force:apex:execute -f tmp.apex -u %s", g:alias))
 endfunction
 
-
-" Get Debug log list
-function! s:apex_log_list()
-  let l:cmd = printf("sfdx force:apex:log:list -u %s", g:alias)
-  call s:open_term(l:cmd)
-endfunction
-" apex#log_get
-
-" Activates debug logging
-function! s:apex_log_tail()
-  let l:cmd = printf("sfdx force:apex:log:tail -u %s", g:alias)
-  call s:open_term(l:cmd)
-endfunction
-
 " ==== force:data ====
 function! s:data(ex_cmd, query)
   if a:ex_cmd ==# 'execute_soql'
@@ -286,7 +271,7 @@ function! s:execute_soql(query) abort
   call s:open_term(l:cmd)
 endfunction
 
-" Use Apex PMD
+" ==== PMD ====
 " - Need to download pmd
 function! s:pmd(ex_cmd)
   if a:ex_cmd ==# 'pmd_current_file'
