@@ -1,5 +1,5 @@
 " ===== force:apex ====
-function! apex#apex#apex(ex_cmd, nfirstline, nlastline) abort
+function! apex#apex(ex_cmd, nfirstline, nlastline) abort
   if a:ex_cmd ==# 'apex_execute'
     call s:apex_execute(a:nfirstline, a:nlastline)
     return

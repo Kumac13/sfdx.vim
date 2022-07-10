@@ -31,7 +31,7 @@ function! sfdx#main(name_space, ex_cmd, ...) range abort
   elseif a:name_space ==# 'source'
     call s:source(a:ex_cmd)
   elseif a:name_space ==# 'apex'
-    call apex#apex#apex(a:ex_cmd, a:firstline, a:lastline)
+    call apex#apex(a:ex_cmd, a:firstline, a:lastline)
   " with some arg
   elseif l:extra_arg != ''
     if a:name_space ==# 'data'
