@@ -20,7 +20,7 @@ function! sfdx#main(name_space, ex_cmd, ...) range abort
     call s:org(a:ex_cmd)
     return
   elseif a:name_space ==# 'pmd'
-    call s:pmd(a:ex_cmd)
+    call pmd#pmd#pmd(a:ex_cmd)
   endif
 
   echo printf("\nExecute the process in the alias: %s",g:alias)
@@ -271,57 +271,3 @@ function! s:execute_soql(query) abort
   call s:open_term(l:cmd)
 endfunction
 
-" ==== PMD ====
-" - Need to download pmd
-function! s:pmd(ex_cmd)
-  if a:ex_cmd ==# 'pmd_current_file'
-    call s:pmd_current_file()
-  endif
-endfunction
-
-function! s:pmd_current_file()
-  echo "\nExecuting Apex Pmd..."
-  let pmd = NewPmd()
-  call pmd.perform()
-endfunction
-
-let g:pmd = {'run_path': $PMD_PATH, 'target_path':'', 'result':''}
-
-function! pmd.command() dict abort
-  let l:ruleset_path = $HOME.'/.vim/plugged/sfdx.vim/rulesets/apex_ruleset.xml'
-  return join([self.run_path, 'pmd', '-d', self.target_path, '-R ',  l:ruleset_path,' -f csv'], ' ' )
-endfunction
-
-function! pmd.perform() dict abort
-  let self.result = split(system(self.command()), '\n')
-  let l:regex = 'net\.sourceforge\.pmd\.PMD\|parseRuleReferenceNode\|WARNING'
-
-  let filterd = filter(self.result, {-> !util#is_regex_match(v:val, l:regex)})
-
-  let parsed = map(copy(filterd), {-> NewPmdResult(v:val).display()})
-
-  call buffer#open_list(parsed)
-
-endfunction
-
-function! NewPmd() abort
-  let self = copy(g:pmd)
-  let self.target_path = expand('%:p')
-  return self
-endfunction
-
-let g:pmd_result = {'File': '', 'Column':'', 'Rule': '', 'Description':''}
-
-function! pmd_result.display() dict abort
-  return printf('%s | %s | %s | %s', self.File, self.Column, self.Rule, self.Description)
-endfunction
-
-function! NewPmdResult(result_row) abort
-  let self = copy(g:pmd_result)
-  let split_item = split(a:result_row, ',')
-  let self.File = expand('%:p')
-  let self.Column = trim(split_item[4], '"', 0)
-  let self.Rule = trim(split_item[7], '"', 0)
-  let self.Description = trim(split_item[5], '"', 0)
-  return self
-endfunction
