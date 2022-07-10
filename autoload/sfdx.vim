@@ -40,23 +40,6 @@ function! sfdx#main(name_space, ex_cmd, ...) range abort
   endif
 endfunction
 
-function! s:open_term(cmd) abort
-    let l:width = winwidth(win_getid())
-    let l:height = winheight(win_getid()) * 2.1
-    let l:split_height = l:height / 8
-    if height > width
-      let l:term = printf('bo term ++rows=%s ++shell', l:split_height)
-    else
-      let l:term = 'vert term ++shell'
-    endif
-
-    call execute(printf("%s %s", term, a:cmd))
-
-    setlocal bufhidden=delete
-    setlocal noswapfile
-    setlocal nobuflisted
-endfunction
-
 " check login org
 function! s:confirm_org()
   let input = input(printf("Select instance to login [p]roduction/[s]andbox/[q]uit: "), "",)
@@ -102,12 +85,12 @@ endfunction
 
 function! s:web_login() abort
   let l:cmd = printf('sfdx force:auth:web:login -r %s -a %s', g:sfdx_login_url, g:alias)
-  call s:open_term(cmd)
+  call util#open_term(cmd)
 endfunction
 
 function! s:auth_list() abort
     let l:cmd = 'sfdx auth:list'
-    call s:open_term(cmd)
+    call util#open_term(cmd)
 endfunction
 
 " ==== force:org ====
@@ -122,7 +105,7 @@ endfunction
 
 function! s:org_list() abort
   let l:cmd = 'sfdx force:org:list'
-  call s:open_term(cmd)
+  call util#open_term(cmd)
 endfunction
 
 " ==== force:source ====
@@ -159,14 +142,14 @@ endfunction
 function! s:deploy() abort
   let l:current_file_path = expand("%:p")
   let l:cmd = printf('sfdx force:source:deploy --sourcepath %s --targetusername %s', l:current_file_path, g:alias)
-  call s:open_term(cmd)
+  call util#open_term(cmd)
 endfunction
 
 " Retrieve current_path file from salesforce
 function! s:retrieve() abort
   let l:current_file_path = expand("%:p")
   let l:cmd = printf('sfdx force:source:retrieve --sourcepath %s --targetusername %s', l:current_file_path, g:alias)
-  call s:open_term(cmd)
+  call util#open_term(cmd)
   redraw
 endfunction
 
@@ -208,7 +191,7 @@ function! s:create_apex_file() abort
     endif
     let l:file_name = input(printf('Enter file name '), '',)
     let l:cmd = printf('sfdx force:apex:%s:create -n %s', l:file_type, l:file_name)
-    call s:open_term(cmd)
+    call util#open_term(cmd)
 endfunction
 
 " Run selected test method
@@ -237,14 +220,14 @@ function! s:run_apex_test_selected(nfirstline, nlastline) abort
   echo printf("Excuting selected test: %s", l:target_test)
   let l:test_run_result = system(cmd)
   let l:cmd = matchstr(test_run_result, '"\zs.*\ze"')
-  call s:open_term(l:cmd)
+  call util#open_term(l:cmd)
 endfunction
 
 " Run test class
 function! s:run_apex_test_cls() abort
   let l:current_file_name = expand("%:t:r")
   let l:cmd = printf("sfdx force:apex:test:run -n '%s' -u %s -r human", l:current_file_name, g:alias)
-  call s:open_term(l:cmd)
+  call util#open_term(l:cmd)
 endfunction
 
 " Execute apex code block
@@ -255,7 +238,7 @@ function! s:apex_execute(nfirstline, nlastline) abort
   endif
   let lines = getline(a:nfirstline, a:nlastline)
   call writefile(lines, outputfile)
-  call s:open_term(printf("sfdx force:apex:execute -f tmp.apex -u %s", g:alias))
+  call util#open_term(printf("sfdx force:apex:execute -f tmp.apex -u %s", g:alias))
 endfunction
 
 " ==== force:data ====
@@ -268,6 +251,6 @@ endfunction
 " Get soql query result
 function! s:execute_soql(query) abort
   let l:cmd = printf("sfdx force:data:soql:query -q '%s' -r human --targetusername %s", a:query, g:alias)
-  call s:open_term(l:cmd)
+  call util#open_term(l:cmd)
 endfunction
 
