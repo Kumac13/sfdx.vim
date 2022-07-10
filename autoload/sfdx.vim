@@ -35,7 +35,7 @@ function! sfdx#main(name_space, ex_cmd, ...) range abort
   " with some arg
   elseif l:extra_arg != ''
     if a:name_space ==# 'data'
-      call s:data(a:ex_cmd, l:extra_arg)
+      call data#data(a:ex_cmd, l:extra_arg)
     endif
   endif
 endfunction
@@ -151,18 +151,5 @@ function! s:retrieve() abort
   let l:cmd = printf('sfdx force:source:retrieve --sourcepath %s --targetusername %s', l:current_file_path, g:alias)
   call util#open_term(cmd)
   redraw
-endfunction
-
-" ==== force:data ====
-function! s:data(ex_cmd, query)
-  if a:ex_cmd ==# 'execute_soql'
-    call s:execute_soql(a:query)
-  endif
-endfunction
-
-" Get soql query result
-function! s:execute_soql(query) abort
-  let l:cmd = printf("sfdx force:data:soql:query -q '%s' -r human --targetusername %s", a:query, g:alias)
-  call util#open_term(l:cmd)
 endfunction
 
