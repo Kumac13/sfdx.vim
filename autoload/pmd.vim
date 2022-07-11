@@ -40,13 +40,16 @@ endfunction
 let g:pmd_result = {'file': '', 'column':'', 'rule': '', 'description':''}
 
 function! pmd_result.display() dict abort
-  return printf('%s | %s | %s | %s', self.file, self.column, self.rule, self.description)
+  let l:file = fnamemodify(self.file, ':t')
+  let l:column = printf('%-4s', self.column)
+  let l:rule = printf('%-25s', self.rule)
+  return printf('%s | %s | %s | %s', l:file, l:column, l:rule, self.description)
 endfunction
 
 function! NewPmdResult(result_row) abort
   let self = copy(g:pmd_result)
   let split_item = split(a:result_row, ',')
-  let self.file = expand('%:p')
+  let self.file = trim(split_item[2],'"', 0)
   let self.column = trim(split_item[4], '"', 0)
   let self.rule = trim(split_item[7], '"', 0)
   let self.description = trim(split_item[5], '"', 0)
