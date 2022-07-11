@@ -123,19 +123,12 @@ endfunction
 " check buffer file is sfdx project file?
 function! s:is_sfdx_project_file() abort
   let l:extention = expand("%:e")
-  let l:patterns = get(g:, 'sfdx_projectfile_patter', [
+  let l:patterns = get(g:, 'sfdx_projectfile_pattern', [
         \ 'cls',
         \ 'trigger',
         \ 'js',
         \ 'xml',
   \])
-  for l:patten in l:patterns
-    if l:extention ==# l:patten
-      return 1
-    endif
-  endfor
-    echo 'This is not sfdx project file'
-    return 0
 endfunction
 
 " Deploy current file to salesforce
@@ -151,5 +144,10 @@ function! s:retrieve() abort
   let l:cmd = printf('sfdx force:source:retrieve --sourcepath %s --targetusername %s', l:current_file_path, g:alias)
   call util#open_term(cmd)
   redraw
+  if match(patterns, l:extention) >= 0
+    return 1
+  endif
+  echo 'This is not sfdx project file'
+  return 0
 endfunction
 
