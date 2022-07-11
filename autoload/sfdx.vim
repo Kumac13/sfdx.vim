@@ -29,9 +29,9 @@ function! sfdx#main(name_space, ex_cmd, ...) range abort
   if a:name_space ==# 'auth'
     call s:auth(a:ex_cmd)
   elseif a:name_space ==# 'source'
-    call source#controller(a:ex_cmd)
+    call force#source#controller(a:ex_cmd)
   elseif a:name_space ==# 'apex'
-    call apex#apex(a:ex_cmd, a:firstline, a:lastline)
+    call force#apex#controller(a:ex_cmd, a:firstline, a:lastline)
   " with some arg
   elseif l:extra_arg != ''
     if a:name_space ==# 'data'

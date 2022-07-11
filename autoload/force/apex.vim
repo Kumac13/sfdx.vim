@@ -1,13 +1,13 @@
 " ===== force:apex ====
-function! apex#apex(ex_cmd, nfirstline, nlastline) abort
+function! force#apex#controller(ex_cmd, nfirstline, nlastline) abort
   if a:ex_cmd ==# 'apex_execute'
     call s:apex_execute(a:nfirstline, a:nlastline)
     return
   elseif a:ex_cmd ==# 'apex_log_list'
-    call apex#debug#list()
+    call forceapex#debug#list()
     return
   elseif a:ex_cmd ==# 'apex_log_tail'
-    call apex#debug#active_debug()
+    call force#apex#debug#active_debug()
     return
   endif
   if !sfdx#is_sfdx_project_file()
