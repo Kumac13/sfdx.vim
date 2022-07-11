@@ -17,7 +17,7 @@ function! sfdx#main(name_space, ex_cmd, ...) range abort
 
   " handle commands which is excutable without auth
   if a:name_space ==# 'org'
-    call s:org(a:ex_cmd)
+    call org#org#controller(a:ex_cmd)
     return
   elseif a:name_space ==# 'pmd'
     call pmd#controller(a:ex_cmd)
@@ -27,7 +27,7 @@ function! sfdx#main(name_space, ex_cmd, ...) range abort
 
   " hundle commands which isnot excutable without auth
   if a:name_space ==# 'auth'
-    call s:auth(a:ex_cmd)
+    call auth#controller(a:ex_cmd)
   elseif a:name_space ==# 'source'
     call force#source#controller(a:ex_cmd)
   elseif a:name_space ==# 'apex'
@@ -35,7 +35,7 @@ function! sfdx#main(name_space, ex_cmd, ...) range abort
   " with some arg
   elseif l:extra_arg != ''
     if a:name_space ==# 'data'
-      call data#data(a:ex_cmd, l:extra_arg)
+      call data#controller(a:ex_cmd, l:extra_arg)
     endif
   endif
 endfunction
@@ -71,41 +71,6 @@ function! s:set_auth() abort
   endfor
   echo printf("\nThere are no such alias in org: %s", g:alias)
   return 0
-endfunction
-
-" ==== force:auth =====
-" auth#web_login
-function! s:auth(ex_cmd) abort
-  if a:ex_cmd == 'login'
-    call s:web_login()
-  elseif a:ex_cmd ==# 'list'
-    call s:auth_list()
-  endif
-endfunction
-
-function! s:web_login() abort
-  let l:cmd = printf('sfdx force:auth:web:login -r %s -a %s', g:sfdx_login_url, g:alias)
-  call util#open_term(cmd)
-endfunction
-
-function! s:auth_list() abort
-    let l:cmd = 'sfdx auth:list'
-    call util#open_term(cmd)
-endfunction
-
-" ==== force:org ====
-" org#list
-function! s:org(ex_cmd) abort
-  if a:ex_cmd ==# 'list'
-    call s:org_list()
-    return
-  endif
-  return
-endfunction
-
-function! s:org_list() abort
-  let l:cmd = 'sfdx force:org:list'
-  call util#open_term(cmd)
 endfunction
 
 " check buffer file is sfdx project file?

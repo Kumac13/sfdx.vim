@@ -1,5 +1,5 @@
 " ==== force:data ====
-function! data#data(ex_cmd, query)
+function! data#controller(ex_cmd, query)
   if a:ex_cmd ==# 'execute_soql'
     call s:execute_soql(a:query)
   endif
