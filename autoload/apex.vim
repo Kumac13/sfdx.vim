@@ -10,7 +10,7 @@ function! apex#apex(ex_cmd, nfirstline, nlastline) abort
     call apex#debug#active_debug()
     return
   endif
-  if !s:is_sfdx_project_file()
+  if !sfdx#is_sfdx_project_file()
     echo printf('You can not create apex file on this directory: %s',s:bufname)
     return
   else

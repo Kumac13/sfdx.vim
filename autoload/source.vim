@@ -1,7 +1,7 @@
 " ==== force:source ====
 "
 function! source#controller(ex_cmd) abort
-  if s:is_sfdx_project_file()
+  if sfdx#is_sfdx_project_file()
     if a:ex_cmd ==# 'deploy'
       call s:deploy()
     elseif a:ex_cmd ==# 'retrieve'

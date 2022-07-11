@@ -109,7 +109,7 @@ function! s:org_list() abort
 endfunction
 
 " check buffer file is sfdx project file?
-function! s:is_sfdx_project_file() abort
+function! sfdx#is_sfdx_project_file() abort
   let l:extention = expand("%:e")
   let l:patterns = get(g:, 'sfdx_projectfile_pattern', [
         \ 'cls',
