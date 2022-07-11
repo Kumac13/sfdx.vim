@@ -29,7 +29,7 @@ function! sfdx#main(name_space, ex_cmd, ...) range abort
   if a:name_space ==# 'auth'
     call s:auth(a:ex_cmd)
   elseif a:name_space ==# 'source'
-    call s:source(a:ex_cmd)
+    call source#controller(a:ex_cmd)
   elseif a:name_space ==# 'apex'
     call apex#apex(a:ex_cmd, a:firstline, a:lastline)
   " with some arg
@@ -108,18 +108,6 @@ function! s:org_list() abort
   call util#open_term(cmd)
 endfunction
 
-" ==== force:source ====
-function! s:source(ex_cmd) abort
-  if s:is_sfdx_project_file()
-    if a:ex_cmd ==# 'deploy'
-      call s:deploy()
-    elseif a:ex_cmd ==# 'retrieve'
-      call s:retrieve()
-    endif
-  endif
-  return
-endfunction
-
 " check buffer file is sfdx project file?
 function! s:is_sfdx_project_file() abort
   let l:extention = expand("%:e")
@@ -129,21 +117,6 @@ function! s:is_sfdx_project_file() abort
         \ 'js',
         \ 'xml',
   \])
-endfunction
-
-" Deploy current file to salesforce
-function! s:deploy() abort
-  let l:current_file_path = expand("%:p")
-  let l:cmd = printf('sfdx force:source:deploy --sourcepath %s --targetusername %s', l:current_file_path, g:alias)
-  call util#open_term(cmd)
-endfunction
-
-" Retrieve current_path file from salesforce
-function! s:retrieve() abort
-  let l:current_file_path = expand("%:p")
-  let l:cmd = printf('sfdx force:source:retrieve --sourcepath %s --targetusername %s', l:current_file_path, g:alias)
-  call util#open_term(cmd)
-  redraw
   if match(patterns, l:extention) >= 0
     return 1
   endif
