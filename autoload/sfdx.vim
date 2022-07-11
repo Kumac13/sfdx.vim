@@ -81,7 +81,8 @@ function! sfdx#is_sfdx_project_file() abort
         \ 'trigger',
         \ 'js',
         \ 'xml',
-  \])
+        \])
+
   if match(patterns, l:extention) >= 0
     return 1
   endif

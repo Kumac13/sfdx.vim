@@ -33,7 +33,7 @@ function! pmd.perform() dict abort
 
   let parsed = map(copy(filterd), {-> NewPmdResult(v:val).display()})
 
-  call buffer#open_list(parsed)
+  call util#open_list(parsed)
 
 endfunction
 
