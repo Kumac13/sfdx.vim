@@ -20,7 +20,7 @@ function! sfdx#main(name_space, ex_cmd, ...) range abort
     call s:org(a:ex_cmd)
     return
   elseif a:name_space ==# 'pmd'
-    call pmd#pmd#pmd(a:ex_cmd)
+    call pmd#controller(a:ex_cmd)
   endif
 
   echo printf("\nExecute the process in the alias: %s",g:alias)

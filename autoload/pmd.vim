@@ -1,6 +1,6 @@
 " ==== PMD ====
 " - Need to download pmd
-function! pmd#pmd#pmd(ex_cmd)
+function! pmd#controller(ex_cmd)
   if a:ex_cmd ==# 'pmd_current_file'
     call s:pmd_current_file()
   endif
