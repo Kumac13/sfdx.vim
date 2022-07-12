@@ -10,6 +10,10 @@ function! sfdx#main(name_space, ex_cmd, ...) range abort
     return
   endif
 
+  if a:name_space ==# 'pmd'
+    call pmd#controller(a:ex_cmd)
+  endif
+
   " set up authentication
   if !s:set_auth()
     return
@@ -19,8 +23,6 @@ function! sfdx#main(name_space, ex_cmd, ...) range abort
   if a:name_space ==# 'org'
     call org#org#controller(a:ex_cmd)
     return
-  elseif a:name_space ==# 'pmd'
-    call pmd#controller(a:ex_cmd)
   endif
 
   echo printf("\nExecute the process in the alias: %s",g:alias)
