@@ -12,6 +12,7 @@ function! sfdx#main(name_space, ex_cmd, ...) range abort
 
   if a:name_space ==# 'pmd'
     call pmd#controller(a:ex_cmd)
+    return
   endif
 
   " set up authentication
