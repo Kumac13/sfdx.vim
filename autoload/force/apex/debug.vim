@@ -18,7 +18,7 @@ endfunction
 
 function! force#apex#debug#list() abort
   let l:result = json_decode(system('sfdx force:apex:log:list -u kumac --json')).result
-  call map(l:result, { -> apex#debug#debug_log_result_new(v:val).display()})
+  call map(l:result, { -> force#apex#debug#debug_log_result_new(v:val).display()})
   call util#open_list(l:result)
 endfunction
 
