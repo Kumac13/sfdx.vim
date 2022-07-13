@@ -4,7 +4,7 @@ function! force#apex#controller(ex_cmd, nfirstline, nlastline) abort
     call s:apex_execute(a:nfirstline, a:nlastline)
     return
   elseif a:ex_cmd ==# 'apex_log_list'
-    call forceapex#debug#list()
+    call force#apex#debug#list()
     return
   elseif a:ex_cmd ==# 'apex_log_tail'
     call force#apex#debug#active_debug()
