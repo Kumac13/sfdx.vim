@@ -53,7 +53,7 @@ function! util#on_bufread_list(list) abort
   nmap <buffer> q <Plug>(session-close)
   nnoremap <silent> <buffer>
         \  <Plug>(buffer-open)
-        \  :<C-u>call apex#debug#get_log()<CR>
+        \  :<C-u>call force#apex#debug#get_log()<CR>
   nmap <buffer> <CR> <Plug>(buffer-open)
 
   let lists = a:list
