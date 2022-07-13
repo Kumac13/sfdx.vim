@@ -16,13 +16,13 @@ function! force#apex#debug#debug_log_result_new(result_row) abort
   return self
 endfunction
 
-function! forceapex#debug#list() abort
+function! force#apex#debug#list() abort
   let l:result = json_decode(system('sfdx force:apex:log:list -u kumac --json')).result
   call map(l:result, { -> apex#debug#debug_log_result_new(v:val).display()})
   call util#open_list(l:result)
 endfunction
 
-function! forceapex#debug#get_log() abort
+function! force#apex#debug#get_log() abort
   let l:debug_id = split(trim(getline('.')), '|')[0]
   let l:cmd = printf("sfdx force:apex:log:get -i %s -u %s", l:debug_id, g:alias)
   call util#open_term(l:cmd)
