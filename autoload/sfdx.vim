@@ -39,6 +39,8 @@ function! sfdx#main(name_space, ex_cmd, ...) range abort
   elseif l:extra_arg != ''
     if a:name_space ==# 'data'
       call data#controller(a:ex_cmd, l:extra_arg)
+    elseif a:name_space ==# 'sobject'
+      call force#schema#describe_sobject_schema(l:extra_arg)
     endif
   endif
 endfunction
