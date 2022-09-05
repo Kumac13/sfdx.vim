@@ -1,5 +1,5 @@
 function! force#schema#describe_sobject_schema(sobject) abort
-  let l:cmd = printf('sfdx force:schema:sobject:describe -s %s -u %s', a:sobject,'kumac')
+  let l:cmd = printf('sfdx force:schema:sobject:describe -s %s -u %s', a:sobject,g:alias)
   let l:result = json_decode(system(l:cmd)).fields
   call map(l:result, { -> force#schema#field_new(v:val).display()})
   call util#open_list(l:result)
