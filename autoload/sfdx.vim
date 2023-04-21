@@ -45,7 +45,6 @@ function! sfdx#main(name_space, ex_cmd, ...) range abort
   endif
 endfunction
 
-" check login org
 function! s:confirm_org()
   let input = input(printf("Select instance to login [p]roduction/[s]andbox/[q]uit: "), "",)
   if input ==# 'p' || input ==# 's'
@@ -62,21 +61,35 @@ function! s:set_auth() abort
       return 0
     endif
   endif
+
   if !exists('g:sfdx_auth_list')
     let l:list = json_decode(system('sfdx auth:list --json'))
     let g:sfdx_auth_list = l:list.result
   endif
+
+  let g:alias_list = []
   for obj in g:sfdx_auth_list
     if has_key(obj, 'alias')
-      if g:alias ==# obj.alias
-        let g:sfdx_login_url = obj.instanceUrl
-        return 1
-      endif
+      let l:instance_url = obj.instanceUrl
+      let l:aliases = split(obj.alias, ',')
+      for l:alias in l:aliases
+        call add(g:alias_list, {'alias': l:alias, 'instanceUrl': l:instance_url})
+      endfor
+    else
+      continue
     endif
   endfor
-  echo printf("\nThere are no such alias in org: %s", g:alias)
-  return 0
+
+  let l:found_alias = filter(g:alias_list, {k, v -> v.alias ==# g:alias})
+  if len(l:found_alias) > 0
+    let g:sfdx_login_url = l:found_alias[0].instanceUrl
+    return 1
+  else
+    echo printf("\nThere are no such alias in org: %s", g:alias)
+    return 0
+  endif
 endfunction
+
 
 " check buffer file is sfdx project file?
 function! sfdx#is_sfdx_project_file() abort
