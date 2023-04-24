@@ -61,7 +61,7 @@ function! s:run_apex_test_selected(nfirstline, nlastline) abort
     return
   endif
   let l:target_test = expand("%:t:r").".".l:method_name
-  let l:cmd = printf("sfdx apex run test --tests '%s' --target-org %s", l:target_test, g:alias)
+  let l:cmd = printf("sfdx apex run test --tests '%s' --target-org %s -y", l:target_test, g:alias)
   echo printf("Excuting selected test: %s", l:target_test)
   let l:test_run_result = system(cmd)
   let l:cmd = matchstr(test_run_result, '"\zs.*\ze"')
@@ -71,7 +71,7 @@ endfunction
 " Run test class
 function! s:run_apex_test_cls() abort
   let l:current_file_name = expand("%:t:r")
-  let l:cmd = printf("sfdx apex run test -n '%s' --target-org %s --result-format human", l:current_file_name, g:alias)
+  let l:cmd = printf("sfdx apex run test -n '%s' --target-org %s --result-format human -v", l:current_file_name, g:alias)
   call util#open_term(l:cmd)
 endfunction
 
