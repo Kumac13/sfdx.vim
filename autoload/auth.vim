@@ -9,7 +9,7 @@ function! auth#controller(ex_cmd) abort
 endfunction
 
 function! s:web_login() abort
-  let l:cmd = printf('sfdx force:auth:web:login -r %s -a %s', g:sfdx_login_url, g:alias)
+  let l:cmd = printf('sfdx org login web -r %s -a %s', g:sfdx_login_url, g:alias)
   call util#open_term(cmd)
 endfunction
 
