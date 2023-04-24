@@ -63,9 +63,6 @@ function! s:run_apex_test_selected(nfirstline, nlastline) abort
   let l:target_test = expand("%:t:r").".".l:method_name
   let l:cmd = printf("sfdx apex run test --tests '%s' --target-org %s -y", l:target_test, g:alias)
   echo printf("Excuting selected test: %s", l:target_test)
-  echo l:cmd
-  let l:test_run_result = system(cmd)
-  let l:cmd = matchstr(test_run_result, '"\zs.*\ze"')
   call util#open_term(l:cmd)
 endfunction
 
