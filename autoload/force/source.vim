@@ -14,14 +14,14 @@ endfunction
 " Deploy current file to salesforce
 function! s:deploy() abort
   let l:current_file_path = expand("%:p")
-  let l:cmd = printf('sfdx force:source:deploy --sourcepath %s --targetusername %s', l:current_file_path, g:alias)
+  let l:cmd = printf('sfdx project deploy start -p %s --target-org %s', l:current_file_path, g:alias)
   call util#open_term(cmd)
 endfunction
 
 " Retrieve current_path file from salesforce
 function! s:retrieve() abort
   let l:current_file_path = expand("%:p")
-  let l:cmd = printf('sfdx force:source:retrieve --sourcepath %s --targetusername %s', l:current_file_path, g:alias)
+  let l:cmd = printf('sfdx project retrieve start -p %s --target-org %s', l:current_file_path, g:alias)
   call util#open_term(cmd)
   redraw
 endfunction
