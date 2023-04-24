@@ -71,7 +71,7 @@ endfunction
 " Run test class
 function! s:run_apex_test_cls() abort
   let l:current_file_name = expand("%:t:r")
-  let l:cmd = printf("sfdx apex run test -n '%s' --target-org %s --result-format human -v", l:current_file_name, g:alias)
+  let l:cmd = printf("sfdx apex run test -n '%s' --target-org %s --result-format human -y", l:current_file_name, g:alias)
   call util#open_term(l:cmd)
 endfunction
 
