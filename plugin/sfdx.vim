@@ -3,7 +3,6 @@ if exists('g:loaded_sfdx')
 endif
 let g:loaded_sfdx = 1
 
-command! SfdxList call sfdx#main('org','list')
 command! SfdxLogin call sfdx#main('auth','login')
 command! SfdxList call sfdx#main('auth','list')
 command! SfdxDeploy call sfdx#main('source', 'deploy')

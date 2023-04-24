@@ -20,12 +20,6 @@ function! sfdx#main(name_space, ex_cmd, ...) range abort
     return
   endif
 
-  " handle commands which is excutable without auth
-  if a:name_space ==# 'org'
-    call org#org#controller(a:ex_cmd)
-    return
-  endif
-
   echo printf("\nExecute the process in the alias: %s",g:alias)
 
   " hundle commands which isnot excutable without auth
