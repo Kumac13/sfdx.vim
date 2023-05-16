@@ -81,6 +81,6 @@ function! s:apex_execute(nfirstline, nlastline) abort
   endif
   let lines = getline(a:nfirstline, a:nlastline)
   call writefile(lines, outputfile)
-  call util#open_term(printf("sfdx run --file tmp.apex --target-org %s", g:alias))
+  call util#open_term(printf("sfdx apex run --file tmp.apex --target-org %s", g:alias))
 endfunction
 
