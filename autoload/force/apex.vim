@@ -84,7 +84,7 @@ function! s:apex_execute(nfirstline, nlastline) abort
     call delete(l:outputfile)
   endfunction
 
-  call timer_start(500, fucntion('s:s:delete_tmpfile'))
+  call timer_start(500, function('s:delete_tmpfile'))
 endfunction
 
 
