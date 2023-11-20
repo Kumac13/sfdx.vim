@@ -79,6 +79,13 @@ function! s:apex_execute(nfirstline, nlastline) abort
   let lines = getline(a:nfirstline, a:nlastline)
   call writefile(lines, outputfile)
   call util#open_term(printf("sf apex run --file %s --target-org %s", l:outputfile, g:alias))
-  call timer_restart(500, {-> delete(l:outputfile)})
+
+  function! s:delete_tmpfile()
+    call delete(l:outputfile)
+  endfunction
+
+  call timer_start(500, fucntion('s:s:delete_tmpfile'))
 endfunction
+
+
 
