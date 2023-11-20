@@ -78,7 +78,7 @@ function! s:apex_execute(nfirstline, nlastline) abort
   let l:outputfile = tempname()
   let lines = getline(a:nfirstline, a:nlastline)
   call writefile(lines, outputfile)
-  call util#open_term(printf("sf apex run --file tmp.apex --target-org %s", g:alias))
+  call util#open_term(printf("sf apex run --file %s --target-org %s", l:outputfile, g:alias))
   call delete(l:outputfile)
 endfunction
 
