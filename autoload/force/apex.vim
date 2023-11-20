@@ -75,10 +75,10 @@ endfunction
 
 " Execute apex code block
 function! s:apex_execute(nfirstline, nlastline) abort
-  let l:outputfile = tempname()
+  let l:outputfile = './tmp.apex'
   let lines = getline(a:nfirstline, a:nlastline)
   call writefile(lines, outputfile)
   call util#open_term(printf("sf apex run --file %s --target-org %s", l:outputfile, g:alias))
-  call delete(l:outputfile)
+  call timer_restart(500, {-> delete(l:outputfile)})
 endfunction
 
