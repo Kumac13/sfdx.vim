@@ -61,7 +61,7 @@ function! s:run_apex_test_selected(nfirstline, nlastline) abort
     return
   endif
   let l:target_test = expand("%:t:r").".".l:method_name
-  let l:cmd = printf("sfdx apex run test --tests '%s' --target-org %s -y", l:target_test, g:alias)
+  let l:cmd = printf("sf apex run test --tests '%s' --target-org %s -y", l:target_test, g:alias)
   echo printf("Excuting selected test: %s", l:target_test)
   call util#open_term(l:cmd)
 endfunction
@@ -69,18 +69,16 @@ endfunction
 " Run test class
 function! s:run_apex_test_cls() abort
   let l:current_file_name = expand("%:t:r")
-  let l:cmd = printf("sfdx apex run test -n '%s' --target-org %s --result-format human -y", l:current_file_name, g:alias)
+  let l:cmd = printf("sf apex run test -n '%s' --target-org %s --result-format human -y", l:current_file_name, g:alias)
   call util#open_term(l:cmd)
 endfunction
 
 " Execute apex code block
 function! s:apex_execute(nfirstline, nlastline) abort
-  let l:outputfile = "./tmp.apex"
-  if !filereadable(outputfile)
-    execute "redir > ".outputfile
-  endif
+  let l:outputfile = tempname()
   let lines = getline(a:nfirstline, a:nlastline)
   call writefile(lines, outputfile)
-  call util#open_term(printf("sfdx apex run --file tmp.apex --target-org %s", g:alias))
+  call util#open_term(printf("sf apex run --file tmp.apex --target-org %s", g:alias))
+  call delete(l:outputfile)
 endfunction
 
