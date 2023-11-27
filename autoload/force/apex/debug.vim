@@ -31,7 +31,7 @@ endfunction
 
 " Activates debug logging
 function! force#apex#debug#active_debug() abort
-  let l:cmd = printf("sfdx apex tail log  --target-org %s", g:alias)
+  let l:cmd = printf("sfdx apex tail log  --target-org %s --skip-trace-flag", g:alias)
   call util#open_term(l:cmd)
 endfunction
 
