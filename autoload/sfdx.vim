@@ -92,6 +92,8 @@ function! sfdx#is_sfdx_project_file() abort
         \ 'cls',
         \ 'trigger',
         \ 'js',
+        \ 'css',
+        \ 'html',
         \ 'xml',
         \])
 
