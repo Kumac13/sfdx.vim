@@ -25,12 +25,12 @@ function! sfdx#main(name_space, ex_cmd, ...) range abort
   " hundle commands which isnot excutable without auth
   if a:name_space ==# 'auth'
     call auth#controller(a:ex_cmd)
+  elseif a:name_space ==# 'org'
+    call org#controller(a:ex_cmd)
   elseif a:name_space ==# 'source'
     call force#source#controller(a:ex_cmd)
   elseif a:name_space ==# 'apex'
     call force#apex#controller(a:ex_cmd, a:firstline, a:lastline)
-  elseif a:name_space ==# 'org'
-    call force#org#controller(a:ex_cmd)
   " with some arg
   elseif l:extra_arg != ''
     if a:name_space ==# 'data'
