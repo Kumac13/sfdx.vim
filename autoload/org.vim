@@ -11,6 +11,6 @@ function! s:list() abort
 endfunction
 
 function! s:open() abort
-  let l:cmd = printf('sf org open -a %s', g:alias)
+  let l:cmd = printf('sf org open -o %s', g:alias)
   execute system(l:cmd)
 endfunction
