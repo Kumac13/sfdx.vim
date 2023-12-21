@@ -6,6 +6,10 @@ function util#is_regex_match(line, regex) abort
   return 1
 endfunction
 
+function util#execute(cmd) abort
+  call util#open_term(cmd)
+endfunction
+
 function util#open_term(cmd) abort
     let l:width = winwidth(win_getid())
     let l:height = winheight(win_getid()) * 2.1
@@ -22,7 +26,6 @@ function util#open_term(cmd) abort
     setlocal noswapfile
     setlocal nobuflisted
 endfunction
-
 
 let s:buffer_name = 'apex list//'
 

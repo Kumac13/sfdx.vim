@@ -1,5 +1,5 @@
 if exists('g:loaded_sfdx')
-  finish
+  finis
 endif
 let g:loaded_sfdx = 1
 
