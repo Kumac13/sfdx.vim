@@ -29,8 +29,6 @@ function! sfdx#main(name_space, ex_cmd, ...) range abort
     call force#source#controller(a:ex_cmd)
   elseif a:name_space ==# 'apex'
     call force#apex#controller(a:ex_cmd, a:firstline, a:lastline)
-  elseif a:name_space ==# 'org'
-    call force#org#controller(a:ex_cmd)
   " with some arg
   elseif l:extra_arg != ''
     if a:name_space ==# 'data'
@@ -43,10 +41,10 @@ endfunction
 
 function! s:confirm_org()
   let input = input(printf("Select instance to login [p]roduction/[s]andbox/[q]uit: "), "",)
-  if input ==# 'p'
+  if input ==# 'p' || input ==# 's'
     let g:alias = input(printf("\nEnter an org alias or user default alias: "), "")
     return 1
-  elseif input ==# 's'
+  else
     return 0
   endif
 endfunction
@@ -106,25 +104,3 @@ function! sfdx#is_sfdx_project_file() abort
   return 0
 endfunction
 
-function! Sf()
-  let self = {}
-  let self.is_sandbox = 0
-  let self.alias = ""
-
-  function! set_config() {
-    let input = input(printf("Select instance to login [p]roduction/[s]andbox/[q]uit: "), "",)
-    if input ==# 'p'
-      let g:alias = input(printf("\nEnter an org alias or user default alias: "), "")
-      return 1
-    elseif input ==# 's'
-      return 0
-    endif
-  }
-
-  function! self.set_sandbox_setting()
-    let self.is_sandbox = 1
-  endfunction
-
-  function! self.set_production_setting()
-  endfunction
-endfunction
