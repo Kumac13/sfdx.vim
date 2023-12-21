@@ -4,7 +4,8 @@ endif
 let g:loaded_sfdx = 1
 
 command! SfdxLogin call sfdx#main('auth','login')
-command! SfdxList call sfdx#main('auth','list')
+command! SfdxOrgList call sfdx#main('org','list')
+command! SfdxOrgOpen call sfdx#main('org', 'open')
 command! SfdxDeploy call sfdx#main('source', 'deploy')
 command! SfdxCreateApexFile call sfdx#main('apex', 'create_apex_file')
 command! SfdxRunApexTestClass call sfdx#main('apex', 'run_apex_test_cls')

@@ -14,6 +14,6 @@ function! s:web_login() abort
 endfunction
 
 function! s:auth_list() abort
-    let l:cmd = 'sfdx org list auth'
+    let l:cmd = 'sf org list'
     call util#open_term(cmd)
 endfunction
