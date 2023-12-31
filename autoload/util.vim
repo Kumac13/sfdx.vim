@@ -89,8 +89,10 @@ function! util#list(buffer_name, list, enter_func, message_for_enter) abort
   endif
 
   if a:enter_func != ''
-    execute 'nnoremap <buffer> <CR> :call ' . a:enter_func . '(' . string(getline('.')) . ')<CR>'
+    let g:current_enter_func = a:enter_func
+    nnoremap <silent> <buffer> <expr> <CR> ':call ' . g:current_enter_func . '(' . string(getline('.')) . ')<CR>'
   endif
   nnoremap <buffer> q :bw<CR>
   echomsg 'Type Enter to '.a:message_for_enter
 endfunction
+

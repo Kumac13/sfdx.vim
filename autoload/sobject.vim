@@ -1,18 +1,18 @@
 function! sobject#controller(ex_cmd, extra_arg) abort
   if a:ex_cmd ==# 'list'
-    call s:list()
+    call sobject#list()
   elseif a:ex_cmd ==# 'describe'
-    call s:describe(a:extra_arg)
+    call sobject#describe(a:extra_arg)
   endif
 endfunction
 
-function! s:list() abort
+function! sobject#list() abort
   let l:cmd = printf('sf sobject list -o %s', g:alias)
   let l:sobjects = split(system(l:cmd), '\n')
-  call util#list('SObjectList', l:sobjects, '', 'execute SObjectDescribe')
+  call util#list('SObjectList', l:sobjects, 'sobject#describe', 'execute SObjectDescribe')
 endfunction
 
-function! s:describe(sobject_name) abort
+function! sobject#describe(sobject_name) abort
   let l:cmd = printf('sf sobject describe --sobject %s -o %s', a:sobject_name, g:alias)
   let l:fields = json_decode(system(l:cmd)).fields
   call map(l:fields, { -> sobject#sobject_field_new(v:val).format_for_display()})
