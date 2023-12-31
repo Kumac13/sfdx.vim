@@ -15,8 +15,14 @@ endfunction
 function! sobject#describe(sobject_name) abort
   let l:cmd = printf('sf sobject describe --sobject %s -o %s', a:sobject_name, g:alias)
   let l:fields = json_decode(system(l:cmd)).fields
-  call map(l:fields, { -> sobject#sobject_field_new(v:val).format_for_display()})
-  call util#list('SobjectFields', l:fields, '', '')
+
+  let header_format = {'label': 'label', 'name': 'name', 'type': 'type', 'inlineHelpText': 'help text'}
+  let header  = sobject#sobject_field_new(header_format).format_for_display()
+
+  let l:display_fields = [header]
+  call extend(l:display_fields, map(copy(l:fields), { k, v -> sobject#sobject_field_new(v).format_for_display()}))
+
+  call util#list('SobjectFields', l:display_fields, '', '')
 endfunction
 
 let g:sobject_field = {'label':'', 'name':'', 'type':'', 'inlineHelpText':''}
