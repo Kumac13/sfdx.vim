@@ -27,9 +27,7 @@ endfunction
 let s:buffer_name = 'apex list//'
 
 function! util#open_list(list) abort
-  " if buffer exists
   if bufexists(s:buffer_name)
-    " if buffer display in window
     let winid = bufwinid(s:buffer_name)
     if winid isnot# -1
       call win_gotoid(winid)
@@ -67,4 +65,32 @@ function! util#on_bufread_list(list) abort
   call setline(1, lists)
 endfunction
 
+function! util#list(buffer_name, list, enter_func, message_for_enter) abort
+  if bufexists(a:buffer_name)
+    let winid = bufwinid(a:buffer_name)
+    if winid isnot# -1
+      call win_gotoid(winid)
+      call util#on_bufread_list(a:list)
+    else
+      execute 'sbuffer' a:buffer_name
+      call util#on_bufread_list(a:list)
+    endif
+  else
+    silent execute 'new' a:buffer_name
+    setlocal buftype=nofile bufhidden=wipe noswapfile cursorline
+  endif
 
+  silent! %delete _
+  if empty(a:list)
+    call setline(1, '--- no list exist ---')
+  else
+    call setline(1, a:list)
+    setlocal nomodifiable nomodified
+  endif
+
+  if a:enter_func != ''
+    execute 'nnoremap <buffer> <CR> :call ' . a:enter_func . '(' . string(getline('.')) . ')<CR>'
+  endif
+  nnoremap <buffer> q :bw<CR>
+  echomsg 'Type Enter to '.a:message_for_enter
+endfunction
