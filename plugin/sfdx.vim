@@ -16,5 +16,6 @@ command! SfdxRetrieve call sfdx#main('source', 'retrieve')
 command! -nargs=1 SfdxSoql call sfdx#main('data', 'execute_soql',<q-args>)
 command! -range SfdxApexExecute <line1>,<line2>call sfdx#main('apex','apex_execute')
 command! SfdxPmdCurrentFile call sfdx#main('pmd', 'pmd_current_file')
-command! -nargs=1 SfdxSObject call sfdx#main('sobject', '', <q-args>)
+command! SfdxSObjectList call sfdx#main('sobject', 'list')
+command! -nargs=1 SfdxSObjectDescribe call sfdx#main('sobject', 'describe', <q-args>)
 

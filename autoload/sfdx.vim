@@ -31,12 +31,12 @@ function! sfdx#main(name_space, ex_cmd, ...) range abort
     call force#source#controller(a:ex_cmd)
   elseif a:name_space ==# 'apex'
     call force#apex#controller(a:ex_cmd, a:firstline, a:lastline)
+  elseif a:name_space ==# 'sobject'
+    call sobject#controller(a:ex_cmd, l:extra_arg)
   " with some arg
   elseif l:extra_arg != ''
     if a:name_space ==# 'data'
       call data#controller(a:ex_cmd, l:extra_arg)
-    elseif a:name_space ==# 'sobject'
-      call force#schema#describe_sobject_schema(l:extra_arg)
     endif
   endif
 endfunction
