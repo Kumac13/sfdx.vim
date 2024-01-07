@@ -79,7 +79,3 @@ function! org#list() abort
 
   call util#list('Orgs', l:display_orgs, '', '')
 endfunction
-
-function! Debug() abort
-  call org#list()
-endfunction
