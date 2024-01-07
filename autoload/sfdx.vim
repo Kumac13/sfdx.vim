@@ -10,8 +10,12 @@ function! sfdx#main(name_space, ex_cmd, ...) range abort
     return
   endif
 
+  " use cmd without alias
   if a:name_space ==# 'pmd'
     call pmd#controller(a:ex_cmd)
+    return
+  elseif a:name_space ==# 'org'
+    call org#controller(a:ex_cmd)
     return
   endif
 
@@ -25,8 +29,6 @@ function! sfdx#main(name_space, ex_cmd, ...) range abort
   " hundle commands which isnot excutable without auth
   if a:name_space ==# 'auth'
     call auth#controller(a:ex_cmd)
-  elseif a:name_space ==# 'org'
-    call org#controller(a:ex_cmd)
   elseif a:name_space ==# 'source'
     call force#source#controller(a:ex_cmd)
   elseif a:name_space ==# 'apex'
