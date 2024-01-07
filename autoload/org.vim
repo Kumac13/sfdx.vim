@@ -1,6 +1,6 @@
 function! org#controller(ex_cmd) abort
   if a:ex_cmd ==# 'list'
-    call s:list()
+    call org#list()
   elseif a:ex_cmd ==# 'open'
     call s:open()
   endif
@@ -31,7 +31,13 @@ function! org#sf_org_new(json_field, org_type) abort
 endfunction
 
 function! sf_org.format_for_display() abort
-  return join([self.org_type, self.user_name, self.alias, self.status, self.org_id, self.is_sandbox, self.instance_url], ' | ')
+  let l:org_type = printf("%-10s", self.org_type)
+  let l:user_name = printf("%-15s", self.user_name)
+  let l:alias = printf("%-10s", self.alias)
+  let l:status = printf("%-15s", self.status)
+  let l:org_id = printf("%-18s", self.org_id)
+  let l:is_sandbox = printf("%-10s", self.is_sandbox ==# 'is_sandbox' ? 'is_sandbox' : self.is_sandbox ? 'true': 'false')
+  return join([l:org_type, l:user_name, l:alias, l:status, l:org_id, l:is_sandbox, self.instance_url], ' | ')
 endfunction
 
 function! org#list() abort
@@ -51,8 +57,4 @@ function! org#list() abort
   endif
 
   call util#list('Orgs', l:display_orgs, '', '')
-endfunction
-
-function! Debug() abort
-  call org#list()
 endfunction
