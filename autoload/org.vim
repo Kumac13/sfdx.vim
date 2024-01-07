@@ -56,5 +56,30 @@ function! org#list() abort
     endfor
   endif
 
+  if !empty(l:orgs.sandboxes)
+    for org in l:orgs.sandboxes
+      let l:formatted_orgs = org#sf_org_new(org, 'sandbox').format_for_display()
+      call add(l:display_orgs, l:formatted_orgs)
+    endfor
+  endif
+
+  if !empty(l:orgs.scratchOrgs)
+    for org in l:orgs.scratchOrgs
+      let l:formatted_orgs = org#sf_org_new(org, 'scratch_org').format_for_display()
+      call add(l:display_orgs, l:formatted_orgs)
+    endfor
+  endif
+
+  if !empty(l:orgs.devHubs)
+    for org in l:orgs.devHubs
+      let l:formatted_orgs = org#sf_org_new(org, 'deb_hub').format_for_display()
+      call add(l:display_orgs, l:formatted_orgs)
+    endfor
+  endif
+
   call util#list('Orgs', l:display_orgs, '', '')
+endfunction
+
+function! Debug() abort
+  call org#list()
 endfunction
