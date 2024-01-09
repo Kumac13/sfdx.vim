@@ -37,7 +37,7 @@ function! sf_org.format_for_display() abort
   let l:status = printf("%-15s", self.status)
   let l:org_id = printf("%-18s", self.org_id)
   let l:is_sandbox = printf("%-10s", self.is_sandbox ==# 'is_sandbox' ? 'is_sandbox' : self.is_sandbox ? 'true': 'false')
-  return join([l:org_type, l:alias, l:status, l:org_id, l:is_sandbox, l:user_Name, self.instance_url], ' | ')
+  return join([l:org_type, l:alias, l:status, l:org_id, l:is_sandbox, l:user_name, self.instance_url], ' | ')
 endfunction
 
 function! org#list() abort
