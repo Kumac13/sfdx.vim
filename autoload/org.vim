@@ -79,3 +79,11 @@ function! org#list() abort
 
   call util#list('Orgs', l:display_orgs, '', '')
 endfunction
+
+function! org#set_displayed_value() abort
+    let l:cmd = printf("sf org display -o %s --json", g:alias)
+    let l:result = json_decode(system(l:cmd))
+    let g:access_token = l:result.result.accessToken
+    let g:instance_url = l:result.result.instanceUrl
+    let g:api_version = l:result.result.apiVersion
+endfunction
