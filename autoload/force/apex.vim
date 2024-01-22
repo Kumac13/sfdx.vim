@@ -74,19 +74,19 @@ function! s:run_apex_test_cls() abort
 endfunction
 
 " Execute apex code block
+let s:temp_apex_file = './tmp.apex'
+
 function! s:apex_execute(nfirstline, nlastline) abort
-  let l:outputfile = './tmp.apex'
-  let lines = getline(a:nfirstline, a:nlastline)
-  call writefile(lines, outputfile)
-  call util#open_term(printf("sf apex run --file %s --target-org %s", l:outputfile, g:alias))
+  let lines = getline(a:firstline, a:lastline)
+  call writefile(lines, s:temp_apex_file)
+  call util#open_term(printf("sf apex run --file %s --target-org %s", s:temp_apex_file, g:alias))
 
-  call timer_start(500, function('s:delete_tmpfile'))
+  call timer_start(1000, 's:delete_temp_file')
 endfunction
 
-function! s:delete_tmpfile(timer)
-  call delete(l:outputfile)
+function! s:delete_temp_file(timer) abort
+  if filereadable(s:temp_apex_file)
+    call delete(s:temp_apex_file)
+  endif
 endfunction
-
-
-
 
