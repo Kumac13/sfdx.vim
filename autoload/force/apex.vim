@@ -80,12 +80,13 @@ function! s:apex_execute(nfirstline, nlastline) abort
   call writefile(lines, outputfile)
   call util#open_term(printf("sf apex run --file %s --target-org %s", l:outputfile, g:alias))
 
-  function! s:delete_tmpfile()
-    call delete(l:outputfile)
-  endfunction
-
   call timer_start(500, function('s:delete_tmpfile'))
 endfunction
+
+function! s:delete_tmpfile(timer)
+  call delete(l:outputfile)
+endfunction
+
 
 
 
