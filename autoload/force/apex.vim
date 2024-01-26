@@ -18,6 +18,8 @@ function! force#apex#controller(ex_cmd, nfirstline, nlastline) abort
       call s:create_apex_file()
     elseif a:ex_cmd ==# 'run_apex_test_cls'
       call s:run_apex_test_cls()
+    elseif a:ex_cmd ==# 'run_apex_test_cls_with_coverage'
+      call s:run_apex_test_cls_with_coverage()
     elseif a:ex_cmd ==# 'run_apex_test_selected'
       call s:run_apex_test_selected(a:nfirstline, a:nlastline)
     endif
@@ -41,6 +43,10 @@ endfunction
 
 " Run selected test method
 function! s:run_apex_test_selected(nfirstline, nlastline) abort
+  if !s:is_test_file()
+    return
+  endif
+
   let lines = getline(a:nfirstline, a:nlastline)
   let list = split(lines[0], ' ')
   let l:method_name = ''
@@ -56,10 +62,6 @@ function! s:run_apex_test_selected(nfirstline, nlastline) abort
     return
   endif
 
-  if expand("%:t:r") !~ "Test"
-    echo "This is not Test Class"
-    return
-  endif
   let l:target_test = expand("%:t:r").".".l:method_name
   let l:cmd = printf("sf apex run test --tests '%s' --target-org %s -y", l:target_test, g:alias)
   echo printf("Excuting selected test: %s", l:target_test)
@@ -68,9 +70,24 @@ endfunction
 
 " Run test class
 function! s:run_apex_test_cls() abort
+  if !s:is_test_file()
+    return
+  endif
+
   let l:current_file_name = expand("%:t:r")
   let l:cmd = printf("sf apex run test -n '%s' --target-org %s --result-format human -y", l:current_file_name, g:alias)
   call util#open_term(l:cmd)
+endfunction
+
+" Run test class showing test coverage
+function! s:run_apex_test_cls_with_coverage() abort
+  if !s:is_test_file()
+    return
+    endif
+
+    let l:current_file_name = expand("%:t:r")
+    let l:cmd = printf("sf apex run test -n '%s' --target-org %s --code-coverage --detailed-coverage -r human --syncronous", l:current_file_name, g:alias)
+    call util#open_term(l:cmd)
 endfunction
 
 " Execute apex code block
@@ -90,3 +107,10 @@ function! s:delete_temp_file(timer) abort
   endif
 endfunction
 
+function! s:is_test_file() abort
+  if expand("%:t:r") !~ "Test"
+    echoerr "This is not a Test Class"
+    return 0
+  endif
+  return 1
+endfunction
