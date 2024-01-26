@@ -86,7 +86,7 @@ function! s:run_apex_test_cls_with_coverage() abort
     endif
 
     let l:current_file_name = expand("%:t:r")
-    let l:cmd = printf("sf apex run test -n '%s' --target-org %s --code-coverage --detailed-coverage -r human --syncronous", l:current_file_name, g:alias)
+    let l:cmd = printf("sf apex run test -n '%s' --target-org %s --code-coverage --detailed-coverage -r human --synchronous", l:current_file_name, g:alias)
     call util#open_term(l:cmd)
 endfunction
 
