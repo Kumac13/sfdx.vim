@@ -77,7 +77,7 @@ endfunction
 let s:temp_apex_file = './tmp.apex'
 
 function! s:apex_execute(nfirstline, nlastline) abort
-  let lines = getline(a:firstline, a:lastline)
+  let lines = getline(a:nfirstline, a:nlastline)
   call writefile(lines, s:temp_apex_file)
   call util#open_term(printf("sf apex run --file %s --target-org %s", s:temp_apex_file, g:alias))
 
