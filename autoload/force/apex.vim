@@ -18,6 +18,8 @@ function! force#apex#controller(ex_cmd, nfirstline, nlastline) abort
       call s:create_apex_file()
     elseif a:ex_cmd ==# 'run_apex_test_cls'
       call s:run_apex_test_cls()
+    elseif a:ex_cmd ==# 'run_apex_test_cls_with_coverage'
+      call s:run_apex_test_cls_with_coverage()
     elseif a:ex_cmd ==# 'run_apex_test_selected'
       call s:run_apex_test_selected(a:nfirstline, a:nlastline)
     endif
@@ -75,6 +77,17 @@ function! s:run_apex_test_cls() abort
   let l:current_file_name = expand("%:t:r")
   let l:cmd = printf("sf apex run test -n '%s' --target-org %s --result-format human -y", l:current_file_name, g:alias)
   call util#open_term(l:cmd)
+endfunction
+
+" Run test class showing test coverage
+function! s:run_apex_test_cls_with_coverage() abort
+  if !s:is_test_file()
+    return
+    endif
+
+    let l:current_file_name = expand("%:t:r")
+    let l:cmd = printf("sf apex run test -n '%s' --target-org %s --code-coverage --detailed-coverage -r human --syncronous", l:current_file_name, g:alias)
+    call util#open_term(l:cmd)
 endfunction
 
 " Execute apex code block
