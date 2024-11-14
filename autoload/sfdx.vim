@@ -27,20 +27,25 @@ function! sfdx#main(name_space, ex_cmd, ...) range abort
   echo printf("\nExecute the process in the alias: %s",g:alias)
 
   " hundle commands which isnot excutable without auth
-  if a:name_space ==# 'auth'
-    call auth#controller(a:ex_cmd)
-  elseif a:name_space ==# 'source'
-    call force#source#controller(a:ex_cmd)
-  elseif a:name_space ==# 'apex'
-    call force#apex#controller(a:ex_cmd, a:firstline, a:lastline)
-  elseif a:name_space ==# 'sobject'
-    call sobject#controller(a:ex_cmd, l:extra_arg)
-  " with some arg
-  elseif l:extra_arg != ''
-    if a:name_space ==# 'data'
-      call data#controller(a:ex_cmd, l:extra_arg)
+  try
+    if a:name_space ==# 'auth'
+      call auth#controller(a:ex_cmd)
+    elseif a:name_space ==# 'source'
+      call force#source#controller(a:ex_cmd)
+    elseif a:name_space ==# 'apex'
+      call force#apex#controller(a:ex_cmd, a:firstline, a:lastline)
+    elseif a:name_space ==# 'sobject'
+      call sobject#controller(a:ex_cmd, l:extra_arg)
+    " with some arg
+    elseif l:extra_arg != ''
+      if a:name_space ==# 'data'
+        call data#controller(a:ex_cmd, l:extra_arg)
+      endif
     endif
-  endif
+  catch /.*/
+    let l:error_msg = v:exception
+    throw l:error_msg
+  endtry
 endfunction
 
 function! s:confirm_org()
