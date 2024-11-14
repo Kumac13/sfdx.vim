@@ -4,9 +4,9 @@ let s:bufname = expand("%:p")
 function! sfdx#main(name_space, ex_cmd, ...) range abort
   let l:extra_arg = get(a:, 1, '')
 
-  " check sfdx command exists
-  if !executable('sfdx')
-    echo 'sfdx not available.'
+  " check sf command exists
+  if !executable('sf')
+    echo 'sf command not available.'
     return
   endif
 
