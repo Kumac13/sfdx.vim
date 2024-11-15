@@ -18,7 +18,8 @@ endfunction
 
 function! force#apex#debug#list() abort
   let l:cmd = printf("sfdx apex list log --target-org %s --json", g:alias)
-  let l:result = json_decode(system(l:l:cmd)).result
+  let l:parsed_output = util#execute_cmd(l:cmd)
+  let l:result = json_decode(l:parsed_output).result
   call map(l:result, { -> force#apex#debug#debug_log_result_new(v:val).display()})
   call util#open_list(l:result)
 endfunction

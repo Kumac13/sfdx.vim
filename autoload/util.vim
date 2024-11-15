@@ -116,9 +116,9 @@ function! s:parse_output(cmd_output) abort
       endif
       continue
     endif
-    call add(l:l:output_lines, l:line)
+    call add(l:output_lines, l:line)
   endfor
 
-  return join(l:l:output_lines, "\n")
+  return join(l:output_lines, "\n")
 endfunction
 
