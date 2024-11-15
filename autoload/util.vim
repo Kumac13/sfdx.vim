@@ -96,3 +96,25 @@ function! util#list(buffer_name, list, enter_func, message_for_enter) abort
   echomsg 'Type Enter to '.a:message_for_enter
 endfunction
 
+
+function! util#parse_output(cmd_output) abort
+  let l:lines = split(a:cmd_output, '\n')
+  let l:json_lines = []
+  let l:is_warning = 0
+
+  for l:line in l:lines
+    if l:line =~? 'Warning:'
+      let l:is_warning = 1
+      if l:line =~? 'update available'
+        echohl WarningMsg
+        echo "\n".l:line
+        echohl None
+      endif
+      continue
+    endif
+    call add(l:json_lines, l:line)
+  endfor
+
+  return join(l:json_lines, "\n")
+endfunction
+

@@ -66,7 +66,9 @@ function! s:set_auth() abort
   endif
 
   if !exists('g:sfdx_auth_list')
-    let l:list = json_decode(system('sf auth list --json'))
+    let l:cmd_output = system('sf auth list --json')
+    let l:json_str = util#parse_output(l:cmd_output)
+    let l:list = json_decode(l:json_str)
     let g:sfdx_auth_list = l:list.result
   endif
 
@@ -112,4 +114,3 @@ function! sfdx#is_sfdx_project_file() abort
   echo 'This is not sfdx project file'
   return 0
 endfunction
-

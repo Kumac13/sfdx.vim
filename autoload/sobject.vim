@@ -8,7 +8,9 @@ endfunction
 
 function! sobject#list() abort
   let l:cmd = printf('sf sobject list -o %s', g:alias)
-  let l:sobjects = split(system(l:cmd), '\n')
+  let l:cmd_output = system(l:cmd)
+  let l:parsed_output = util#parse_output(l:cmd_output)
+  let l:sobjects = split(l:parsed_output, '\n')
   call util#list('SObjectList', l:sobjects, 'sobject#describe', 'execute SObjectDescribe')
 endfunction
 
@@ -21,7 +23,9 @@ function! sobject#describe(sobject_name) abort
   endif
 
   let l:cmd = printf('sf sobject describe --sobject %s -o %s', l:sobject_name, g:alias)
-  let l:fields = json_decode(system(l:cmd)).fields
+  let l:cmd_output = system(l:cmd)
+  let l:parsed_output = util#parse_output(l:cmd_output)
+  let l:fields = json_decode(l:l:parsed_output).fields
 
   let header_format = {'label': 'label', 'name': 'name', 'type': 'type', 'inlineHelpText': 'help text'}
   let header  = sobject#sobject_field_new(header_format).format_for_display()
