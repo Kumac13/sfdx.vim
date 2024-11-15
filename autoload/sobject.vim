@@ -25,7 +25,7 @@ function! sobject#describe(sobject_name) abort
   let l:cmd = printf('sf sobject describe --sobject %s -o %s', l:sobject_name, g:alias)
   let l:cmd_output = system(l:cmd)
   let l:parsed_output = util#parse_output(l:cmd_output)
-  let l:fields = json_decode(l:l:parsed_output).fields
+  let l:fields = json_decode(l:parsed_output).fields
 
   let header_format = {'label': 'label', 'name': 'name', 'type': 'type', 'inlineHelpText': 'help text'}
   let header  = sobject#sobject_field_new(header_format).format_for_display()
