@@ -42,7 +42,8 @@ endfunction
 
 function! org#list() abort
   let l:cmd = printf('sf org list --json')
-  let l:orgs = json_decode(system(l:cmd)).result
+  let l:parsed_output = util#execute_cmd(l:cmd)
+  let l:orgs = json_decode(l:parsed_output).result
 
   let l:header_fields = {'username':'user name', 'alias': 'alias', 'connectedStatus': 'status', 'orgId':'org_id', 'isSandbox': 'is_sandbox', 'instanceUrl': 'instance_url'}
   let header = org#sf_org_new(l:header_fields, 'org_type').format_for_display()
@@ -82,7 +83,8 @@ endfunction
 
 function! org#set_displayed_value() abort
     let l:cmd = printf("sf org display -o %s --json", g:alias)
-    let l:result = json_decode(system(l:cmd))
+    let l:parsed_output = util#execute_cmd(l:cmd)
+    let l:result = json_decode(l:parsed_output)
     let g:access_token = l:result.result.accessToken
     let g:instance_url = l:result.result.instanceUrl
     let g:api_version = l:result.result.apiVersion

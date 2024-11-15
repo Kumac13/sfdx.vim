@@ -96,10 +96,14 @@ function! util#list(buffer_name, list, enter_func, message_for_enter) abort
   echomsg 'Type Enter to '.a:message_for_enter
 endfunction
 
+function! util#execute_cmd(cmd)
+  let l:cmd_output = system(a:cmd)
+  return s:parse_output(l:cmd_output)
+endfunction
 
-function! util#parse_output(cmd_output) abort
+function! s:parse_output(cmd_output) abort
   let l:lines = split(a:cmd_output, '\n')
-  let l:json_lines = []
+  let l:output_lines = []
   let l:is_warning = 0
 
   for l:line in l:lines
@@ -112,9 +116,9 @@ function! util#parse_output(cmd_output) abort
       endif
       continue
     endif
-    call add(l:json_lines, l:line)
+    call add(l:l:output_lines, l:line)
   endfor
 
-  return join(l:json_lines, "\n")
+  return join(l:l:output_lines, "\n")
 endfunction
 

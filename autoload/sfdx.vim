@@ -66,9 +66,8 @@ function! s:set_auth() abort
   endif
 
   if !exists('g:sfdx_auth_list')
-    let l:cmd_output = system('sf auth list --json')
-    let l:json_str = util#parse_output(l:cmd_output)
-    let l:list = json_decode(l:json_str)
+    let l:parsed_output = util#execute_cmd('sf auth list --json')
+    let l:list = json_decode(l:l:parsed_output)
     let g:sfdx_auth_list = l:list.result
   endif
 

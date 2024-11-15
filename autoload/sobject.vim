@@ -6,14 +6,6 @@ function! sobject#controller(ex_cmd, extra_arg) abort
   endif
 endfunction
 
-function! sobject#list() abort
-  let l:cmd = printf('sf sobject list -o %s', g:alias)
-  let l:cmd_output = system(l:cmd)
-  let l:parsed_output = util#parse_output(l:cmd_output)
-  let l:sobjects = split(l:parsed_output, '\n')
-  call util#list('SObjectList', l:sobjects, 'sobject#describe', 'execute SObjectDescribe')
-endfunction
-
 function! sobject#describe(sobject_name) abort
   let l:sobject_name = a:sobject_name
   if match(l:sobject_name, ' \| ') >= 0
@@ -23,8 +15,7 @@ function! sobject#describe(sobject_name) abort
   endif
 
   let l:cmd = printf('sf sobject describe --sobject %s -o %s', l:sobject_name, g:alias)
-  let l:cmd_output = system(l:cmd)
-  let l:parsed_output = util#parse_output(l:cmd_output)
+  let l:parsed_output = util#execute_cmd(l:cmd)
   let l:fields = json_decode(l:parsed_output).fields
 
   let header_format = {'label': 'label', 'name': 'name', 'type': 'type', 'inlineHelpText': 'help text'}
@@ -61,8 +52,8 @@ function! sobject#describe_global() abort
   let l:api_url = g:instance_url . '/services/data/v' . g:api_version . '/sobjects/'
   let l:auth_header = 'Authorization: Bearer ' . g:access_token
   let l:curl_command = 'curl -s "' . l:api_url . '" -H "' . l:auth_header . '"'
-  let l:output = system(l:curl_command)
-  let l:sobjects = json_decode(l:output).sobjects
+  let l:parsed_output = util#execute_cmd(l:curl_command)
+  let l:sobjects = json_decode(l:parsed_output).sobjects
   let l:display_sobjects = []
   for sobject in l:sobjects
     let l:label = sobject.label
