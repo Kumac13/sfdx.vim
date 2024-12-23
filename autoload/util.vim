@@ -86,6 +86,7 @@ function! util#list(buffer_name, list, enter_func, message_for_enter) abort
   else
     call setline(1, a:list)
     setlocal nomodifiable nomodified
+    setlocal noreadonly
   endif
 
   if a:enter_func != ''
