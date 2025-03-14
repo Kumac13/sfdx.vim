@@ -117,7 +117,7 @@ function! s:is_test_file() abort
   return 1
 endfunction
 
-" テスト関数一覧を表示する関数
+
 function! s:list_apex_tests() abort
   if !s:is_test_file()
     return
@@ -126,22 +126,38 @@ function! s:list_apex_tests() abort
   " 現在のバッファからテストメソッドを抽出
   let l:lines = getline(1, '$')
   let l:test_methods = []
-  let l:test_method_lines = []
   let l:buffer_name = expand('%:t:r')
+  let l:in_method = 0
+
+  " タグのパターン（@IsTestや@TestSetupなど）
+  let l:istest_pattern = '@IsTest\|@TestSetup\|@Test'
 
   for l:idx in range(len(l:lines))
     let l:line_num = l:idx + 1
-   let l:line = l:lines[l:idx]
+    let l:line = l:lines[l:idx]
+    let l:trimmed_line = substitute(l:line, '^\s*', '', '')
 
-    " @isTest静的メソッドと、testMethodキーワードを持つメソッドを検出
-    if util#is_regex_match(l:line, '@isTest\s\+static\s\+void\s\+\w\+\s*(') ||
-     \ util#is_regex_match(l:line, 'static\s\+testMethod\s\+void\s\+\w\+\s*(')
-      " メソッド名を抽出
-      let l:method_name = matchstr(l:line, '\(static\s\+\(void\|testMethod\s\+void\)\s\+\)\@<=\w\+\ze\s*(')
+    " @IsTest、@TestSetupなどのアノテーションを検出
+    if l:trimmed_line =~? l:istest_pattern
+      let l:in_method = 1
+      continue
+    endif
 
+    " アノテーションの後にprivate/public static voidメソッド定義を検出
+    if l:in_method && l:trimmed_line =~? '^\(private\|public\|static\|void\|testMethod\)\s\+'
+      if l:trimmed_line =~? '\<void\s\+\w\+\s*('
+        " メソッド名を抽出
+        let l:method_name = matchstr(l:trimmed_line, '\<void\s\+\zs\w\+\ze\s*(')
+        if !empty(l:method_name)
+          call add(l:test_methods, l:method_name)
+        endif
+      endif
+      let l:in_method = 0
+    elseif l:trimmed_line =~? '^\(private\|public\|static\)\s\+testMethod\s\+void\s\+\w\+\s*('
+      " testMethod キーワードを直接使用している場合
+      let l:method_name = matchstr(l:trimmed_line, 'testMethod\s\+void\s\+\zs\w\+\ze\s*(')
       if !empty(l:method_name)
         call add(l:test_methods, l:method_name)
-        call add(l:test_method_lines, l:line_num)
       endif
     endif
   endfor
@@ -154,7 +170,7 @@ function! s:list_apex_tests() abort
   " リストに表示するための整形
   let l:display_list = []
   for l:idx in range(len(l:test_methods))
-    call add(l:display_list, printf("%s. %s", l:idx + 1, l:test_methods[l:idx]))
+    call add(l:display_list, printf("%d. %s", l:idx + 1, l:test_methods[l:idx]))
   endfor
 
   " グローバル変数にテストメソッド情報を保存（選択用）
@@ -172,7 +188,13 @@ endfunction
 
 " グローバル関数として定義（リストからアクセスできるようにするため）
 function! force#apex#run_selected_test(selected_line) abort
-  " 選択された行から番号を抽出（例: "1. testMethod1" -> 1）
+  " エラーハンドリングを強化
+  if !exists('g:apex_test_methods') || !exists('g:apex_test_class')
+    echo "Test method data is not available. Please run the list command again."
+    return
+  endif
+
+  " 選択された行から番号を抽出（例: "1. testMethodName" -> 1）
   let l:selected_index = str2nr(matchstr(a:selected_line, '^\d\+')) - 1
 
   if l:selected_index < 0 || l:selected_index >= len(g:apex_test_methods)
