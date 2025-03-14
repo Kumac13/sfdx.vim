@@ -32,7 +32,7 @@ endfunction
 function! s:create_apex_file() abort
     let l:class_or_trigger = input(printf('Select file type [c]lass/[t]rigger/[q]uit: '), '',)
     if class_or_trigger ==# 'c'
-      let l:file_type = 'class'
+           let l:file_type = 'class'
     elseif class_or_trigger ==# 't'
       let l:file_type = 'trigger'
     else
@@ -117,6 +117,7 @@ function! s:is_test_file() abort
   return 1
 endfunction
 
+" テスト関数一覧を表示する関数
 function! s:list_apex_tests() abort
   if !s:is_test_file()
     return
@@ -124,57 +125,67 @@ function! s:list_apex_tests() abort
 
   " 現在のバッファからテストメソッドを抽出
   let l:lines = getline(1, '$')
-  let l:qf_list = []
+  let l:test_methods = []
+  let l:test_method_lines = []
+  let l:buffer_name = expand('%:t:r')
 
   for l:idx in range(len(l:lines))
     let l:line_num = l:idx + 1
-    let l:line = l:lines[l:idx]
+   let l:line = l:lines[l:idx]
 
     " @isTest静的メソッドと、testMethodキーワードを持つメソッドを検出
-    if l:line =~# '@isTest\s\+static\s\+void\s\+\w\+\s*(' || l:line =~# 'static\s\+testMethod\s\+void\s\+\w\+\s*('
+    if util#is_regex_match(l:line, '@isTest\s\+static\s\+void\s\+\w\+\s*(') ||
+     \ util#is_regex_match(l:line, 'static\s\+testMethod\s\+void\s\+\w\+\s*(')
       " メソッド名を抽出
       let l:method_name = matchstr(l:line, '\(static\s\+\(void\|testMethod\s\+void\)\s\+\)\@<=\w\+\ze\s*(')
 
       if !empty(l:method_name)
-        call add(l:qf_list, {
-          \ 'filename': expand('%:p'),
-          \ 'lnum': l:line_num,
-          \ 'text': 'Test Method: ' . l:method_name,
-          \ 'method_name': l:method_name
-          \ })
+        call add(l:test_methods, l:method_name)
+        call add(l:test_method_lines, l:line_num)
       endif
     endif
   endfor
 
-  if empty(l:qf_list)
+  if empty(l:test_methods)
     echo "No test methods found in this class."
     return
   endif
 
-  " quickfixリストに設定
-  call setqflist(l:qf_list)
-  copen
+  " リストに表示するための整形
+  let l:display_list = []
+  for l:idx in range(len(l:test_methods))
+    call add(l:display_list, printf("%s. %s", l:idx + 1, l:test_methods[l:idx]))
+  endfor
 
-  " quickfixリストでEnterキーを押したときのカスタムマッピングを設定
-  augroup ApexTestQuickfix
-    autocmd!
-    autocmd FileType qf nnoremap <buffer> <CR> :call <SID>run_selected_test()<CR>
-  augroup END
+  " グローバル変数にテストメソッド情報を保存（選択用）
+  let g:apex_test_methods = l:test_methods
+  let g:apex_test_class = l:buffer_name
+
+  " util#listを使ってリストを表示
+  call util#list(
+    \ 'apex-test-methods//',
+    \ l:display_list,
+    \ 'force#apex#run_selected_test',
+    \ 'execute the selected test method'
+  \)
 endfunction
 
-" quickfixリストから選択されたテストを実行する関数
-function! s:run_selected_test() abort
-  let l:qf_item = getqflist()[line('.') - 1]
-  let l:method_name = l:qf_item.method_name
-  let l:class_name = fnamemodify(l:qf_item.filename, ':t:r')
+" グローバル関数として定義（リストからアクセスできるようにするため）
+function! force#apex#run_selected_test(selected_line) abort
+  " 選択された行から番号を抽出（例: "1. testMethod1" -> 1）
+  let l:selected_index = str2nr(matchstr(a:selected_line, '^\d\+')) - 1
+
+  if l:selected_index < 0 || l:selected_index >= len(g:apex_test_methods)
+    echo "Invalid selection"
+    return
+  endif
+
+  let l:method_name = g:apex_test_methods[l:selected_index]
+  let l:class_name = g:apex_test_class
 
   let l:target_test = l:class_name . '.' . l:method_name
   let l:cmd = printf("sf apex run test --tests '%s' --target-org %s -y", l:target_test, g:alias)
 
   echo printf("Executing selected test: %s", l:target_test)
   call util#open_term(l:cmd)
-
-  " quickfixウィンドウを閉じる（オプション）
-  " cclose
 endfunction
-

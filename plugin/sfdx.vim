@@ -21,4 +21,3 @@ command! SfdxPmdCurrentFile call sfdx#main('pmd', 'pmd_current_file')
 command! SfdxSObjectList call sfdx#main('sobject', 'list')
 command! -nargs=1 SfdxSObjectDescribe call sfdx#main('sobject', 'describe', <q-args>)
 command! SfdxAlias call alias#list()
-
