@@ -22,6 +22,8 @@ function! force#apex#controller(ex_cmd, nfirstline, nlastline) abort
       call s:run_apex_test_cls_with_coverage()
     elseif a:ex_cmd ==# 'run_apex_test_selected'
       call s:run_apex_test_selected(a:nfirstline, a:nlastline)
+    elseif a:ex_cmd ==# 'run_list_apex_test'
+      call s:list_apex_tests()
     endif
   endif
 endfunction
@@ -114,3 +116,65 @@ function! s:is_test_file() abort
   endif
   return 1
 endfunction
+
+function! s:list_apex_tests() abort
+  if !s:is_test_file()
+    return
+  endif
+
+  " 現在のバッファからテストメソッドを抽出
+  let l:lines = getline(1, '$')
+  let l:qf_list = []
+
+  for l:idx in range(len(l:lines))
+    let l:line_num = l:idx + 1
+    let l:line = l:lines[l:idx]
+
+    " @isTest静的メソッドと、testMethodキーワードを持つメソッドを検出
+    if l:line =~# '@isTest\s\+static\s\+void\s\+\w\+\s*(' || l:line =~# 'static\s\+testMethod\s\+void\s\+\w\+\s*('
+      " メソッド名を抽出
+      let l:method_name = matchstr(l:line, '\(static\s\+\(void\|testMethod\s\+void\)\s\+\)\@<=\w\+\ze\s*(')
+
+      if !empty(l:method_name)
+        call add(l:qf_list, {
+          \ 'filename': expand('%:p'),
+          \ 'lnum': l:line_num,
+          \ 'text': 'Test Method: ' . l:method_name,
+          \ 'method_name': l:method_name
+          \ })
+      endif
+    endif
+  endfor
+
+  if empty(l:qf_list)
+    echo "No test methods found in this class."
+    return
+  endif
+
+  " quickfixリストに設定
+  call setqflist(l:qf_list)
+  copen
+
+  " quickfixリストでEnterキーを押したときのカスタムマッピングを設定
+  augroup ApexTestQuickfix
+    autocmd!
+    autocmd FileType qf nnoremap <buffer> <CR> :call <SID>run_selected_test()<CR>
+  augroup END
+endfunction
+
+" quickfixリストから選択されたテストを実行する関数
+function! s:run_selected_test() abort
+  let l:qf_item = getqflist()[line('.') - 1]
+  let l:method_name = l:qf_item.method_name
+  let l:class_name = fnamemodify(l:qf_item.filename, ':t:r')
+
+  let l:target_test = l:class_name . '.' . l:method_name
+  let l:cmd = printf("sf apex run test --tests '%s' --target-org %s -y", l:target_test, g:alias)
+
+  echo printf("Executing selected test: %s", l:target_test)
+  call util#open_term(l:cmd)
+
+  " quickfixウィンドウを閉じる（オプション）
+  " cclose
+endfunction
+
