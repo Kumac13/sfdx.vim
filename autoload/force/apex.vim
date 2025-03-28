@@ -3,6 +3,9 @@ function! force#apex#controller(ex_cmd, nfirstline, nlastline) abort
   if a:ex_cmd ==# 'apex_execute'
     call s:apex_execute(a:nfirstline, a:nlastline)
     return
+  elseif a:ex_cmd ==# 'apex_execute_markdown_block'
+    call force#apex#execute_markdown_apex_block()
+    return
   elseif a:ex_cmd ==# 'apex_log_list'
     call force#apex#debug#list()
     return
@@ -101,6 +104,46 @@ function! s:apex_execute(nfirstline, nlastline) abort
   call util#open_term(printf("sf apex run --file %s --target-org %s", s:temp_apex_file, g:alias))
 
   call timer_start(1000, 's:delete_temp_file')
+endfunction
+
+" Markdownファイル内のApexコードブロックを実行する
+function! force#apex#execute_markdown_apex_block() abort
+  " 現在の行番号を取得
+  let l:current_line = line('.')
+  let l:start_line = 0
+  let l:end_line = 0
+
+  " カーソルより上の行を検索して```apexを見つける
+  let l:line_num = l:current_line
+  while l:line_num > 0
+    let l:line = getline(l:line_num)
+    if l:line =~# '^\s*```\s*apex'
+      let l:start_line = l:line_num + 1
+      break
+    endif
+    let l:line_num -= 1
+  endwhile
+
+  " カーソルより下の行を検索して```を見つける
+  let l:line_num = l:current_line
+  let l:last_line = line('$')
+  while l:line_num <= l:last_line
+    let l:line = getline(l:line_num)
+    if l:line =~# '^\s*```\s*$' && l:start_line > 0
+      let l:end_line = l:line_num - 1
+      break
+    endif
+    let l:line_num += 1
+  endwhile
+
+  " 有効なブロックが見つかった場合は実行
+  if l:start_line > 0 && l:end_line > 0 && l:start_line <= l:end_line
+    call s:apex_execute(l:start_line, l:end_line)
+    return 1
+  endif
+
+  echo "カーソルがApexコードブロック内にありません"
+  return 0
 endfunction
 
 function! s:delete_temp_file(timer) abort
@@ -211,3 +254,4 @@ function! force#apex#run_selected_test(selected_line) abort
   echo printf("Executing selected test: %s", l:target_test)
   call util#open_term(l:cmd)
 endfunction
+
