@@ -37,10 +37,8 @@ function! sfdx#main(name_space, ex_cmd, ...) range abort
     elseif a:name_space ==# 'sobject'
       call sobject#controller(a:ex_cmd, l:extra_arg)
     " with some arg
-    elseif l:extra_arg != ''
-      if a:name_space ==# 'data'
-        call data#controller(a:ex_cmd, l:extra_arg)
-      endif
+    elseif a:name_space ==# 'data'
+      call data#controller(a:ex_cmd, l:extra_arg)
     endif
   catch /.*/
     let l:error_msg = v:exception
