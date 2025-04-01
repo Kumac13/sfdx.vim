@@ -9,7 +9,8 @@ endfunction
 
 " Get soql query result
 function! s:execute_soql(query) abort
-  let l:cmd = printf("sf data query --query '%s' -r human --target-org %s", a:query, g:alias)
+  let l:cmd = printf("sf data query --query \"%s\" -r human --target-org %s", a:query, g:alias)
+
   call util#open_term(l:cmd)
 endfunction
 
