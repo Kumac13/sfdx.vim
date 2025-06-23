@@ -96,10 +96,9 @@ function! s:run_apex_test_cls_with_coverage() abort
 endfunction
 
 " Execute apex code block
-let s:temp_apex_file = './tmp.apex'
-
 function! s:apex_execute(nfirstline, nlastline) abort
   let lines = getline(a:nfirstline, a:nlastline)
+  let s:temp_apex_file = getcwd() . '/tmp.apex'
   call writefile(lines, s:temp_apex_file)
   call util#open_term(printf("sf apex run --file %s --target-org %s", s:temp_apex_file, g:alias))
 
