@@ -26,7 +26,7 @@ function! s:retrieve() abort
   let l:current_file_path = expand("%:p")
   let l:cmd = printf('sf project retrieve start -d %s --target-org %s', l:current_file_path, g:alias)
   call util#open_term(cmd)
-  redraw
+  checktime
 endfunction
 
 function! s:deploy_force() abort
@@ -39,5 +39,5 @@ function! s:retrieve_force() abort
   let l:current_file_path = expand("%:p")
   let l:cmd = printf('sf project retrieve start -d %s --target-org %s --ignore-conflicts', l:current_file_path, g:alias)
   call util#open_term(cmd)
-  redraw
+  checktime
 endfunction
