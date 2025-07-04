@@ -98,17 +98,18 @@ endfunction
 " Execute apex code block
 function! s:apex_execute(nfirstline, nlastline) abort
   let lines = getline(a:nfirstline, a:nlastline)
-  let s:temp_apex_file = tempname() . '.apex'
+  let temp_apex_file = tempname() . '.apex'
   
   try
-    call writefile(lines, s:temp_apex_file)
-    if !filereadable(s:temp_apex_file)
-      echoerr printf('Failed to create temporary file: %s', s:temp_apex_file)
+    call writefile(lines, temp_apex_file)
+    if !filereadable(temp_apex_file)
+      echoerr printf('Failed to create temporary file: %s', temp_apex_file)
       return
     endif
     
-    call util#open_term(printf("sf apex run --file %s --target-org %s", s:temp_apex_file, g:alias))
-    call timer_start(1000, 's:delete_temp_file')
+    call util#open_term(printf("sf apex run --file %s --target-org %s", temp_apex_file, g:alias))
+    " タイマーで削除する代わりに、より確実な方法で削除
+    call timer_start(2000, function('s:delete_temp_file', [temp_apex_file]))
   catch
     echoerr printf('Error creating temporary file: %s', v:exception)
     return
@@ -155,9 +156,9 @@ function! force#apex#execute_markdown_apex_block() abort
   return 0
 endfunction
 
-function! s:delete_temp_file(timer) abort
-  if filereadable(s:temp_apex_file)
-    call delete(s:temp_apex_file)
+function! s:delete_temp_file(filepath, timer) abort
+  if filereadable(a:filepath)
+    call delete(a:filepath)
   endif
 endfunction
 
